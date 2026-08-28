@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>採取量計算ツール</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4CAF50">
 
@@ -15,7 +14,6 @@ body {
     padding: 20px;
     margin: 0;
 }
-
 .app-card {
     background: #ffffff;
     padding: 22px;
@@ -25,257 +23,217 @@ body {
     margin: auto;
     display: none;
 }
-
 h2 {
     font-size: 30px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 24px;
 }
-
-.menu-item {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 20px;
-    margin: 16px 0;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-    cursor: pointer;
-}
-
-.menu-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #4CAF50, #2e8b3f);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 32px;
-    margin-right: 18px;
-}
-
-.menu-text {
-    font-size: 22px;
-    font-weight: bold;
-}
-
 label {
-    font-size: 20px;
     font-weight: bold;
-    margin-top: 18px;
+    margin-top: 12px;
     display: block;
 }
-
-input {
+input, select {
     width: 100%;
-    padding: 14px;
+    padding: 10px;
     margin-top: 6px;
-    font-size: 20px;
     border-radius: 10px;
     border: 1px solid #ccc;
-    background: #fafafa;
-    box-sizing: border-box;
+    font-size: 18px;
 }
-
-button.calc-btn {
+.calc-btn {
     width: 100%;
-    padding: 16px;
-    font-size: 22px;
-    margin-top: 26px;
-    background: linear-gradient(135deg, #4CAF50, #2e8b3f);
+    padding: 14px;
+    background: #4CAF50;
     color: white;
     border: none;
     border-radius: 12px;
-    font-weight: bold;
+    font-size: 20px;
+    margin-top: 20px;
 }
-
 .back-btn {
-    margin-top: 24px;
     width: 100%;
     padding: 14px;
-    font-size: 20px;
-    background: #888;
+    background: #777;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
+    font-size: 18px;
+    margin-top: 20px;
 }
-
 .result {
-    margin-top: 28px;
-    font-size: 26px;
+    margin-top: 20px;
+    font-size: 22px;
     font-weight: bold;
     text-align: center;
 }
-
 .formula-card {
-    margin-top: 30px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 6px solid #000000;
+    background: #f9f9f9;
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 20px;
 }
-
 .formula-title {
-    font-size: 20px;
     font-weight: bold;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
-
-.formula-math {
-    font-family: "SF Mono", Consolas, monospace;
-    font-size: 17px;
-    line-height: 1.6;
-    text-align: center;
-}
-
 .fraction {
     display: inline-block;
-    width: 100%;
     text-align: center;
-    margin: 10px 0;
 }
-
 .fraction .top {
+    border-bottom: 1px solid #000;
     display: block;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #000;
 }
-
 .fraction .bottom {
     display: block;
-    padding-top: 6px;
+}
+.menu-btn {
+    width: 100%;
+    padding: 18px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 22px;
+    margin-top: 20px;
 }
 </style>
 </head>
 <body>
 
-<!-- ▼ ホーム -->
+<!-- ▼ ホームメニュー -->
 <div id="menu" class="app-card" style="display:block;">
     <h2>採取量計算ツール</h2>
 
-    <div class="menu-item" onclick="showTool('gas')">
-        <div class="menu-icon">💨</div>
-        <div class="menu-text">気体ガス採取量</div>
-    </div>
+    <button class="menu-btn" onclick="openCard('gas')">
+        気体採取量
+    </button>
 
-    <div class="menu-item" onclick="showTool('liquid')">
-        <div class="menu-icon">💧</div>
-        <div class="menu-text">薬液採取量</div>
-    </div>
+    <button class="menu-btn" onclick="openCard('liquid')">
+        薬液採取量
+    </button>
 
-    <div class="menu-item" onclick="showTool('ampule')">
-        <div class="menu-icon">🧪</div>
-        <div class="menu-text">アンプル希釈量</div>
-    </div>
+    <button class="menu-btn" onclick="openCard('ampule')">
+        アンプル採取量
+    </button>
 </div>
-
-<!-- ▼ 気体 -->
-<div id="gas" class="app-card">
-    <h2>気体ガス採取量</h2>
-
-    <label>希釈ガス作製量（L）</label>
-    <input type="number" id="makeVolume">
-
-    <label>作製濃度（ppm）</label>
-    <input type="number" id="makePPM">
-
-    <label>ボンベガス濃度（ppm）</label>
-    <input type="number" id="cylinderPPM">
-
-    <button class="calc-btn" onclick="calcGas()">計算する</button>
-
-    <div class="result" id="gasResult"></div>
-
-    <div class="formula-card">
-        <div class="formula-title">気体ガス採取量計算式</div>
-        <div class="formula-math">
-            <div class="fraction">
-                <span class="top">希釈ガス作製量 × 作製濃度</span>
-                <span class="bottom">ボンベ濃度 − 作製濃度</span>
-            </div>
-            × 1000 = 採取量(mL)
-        </div>
-    </div>
-
-    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
-</div>
-
-<!-- ▼ 薬液 -->
+<!-- ▼ 薬液採取量（完成版） -->
 <div id="liquid" class="app-card">
     <h2>薬液採取量</h2>
 
+    <label>ガス名</label>
+    <select id="gasSelect" onchange="loadGasData()">
+        <option value="">選択してください</option>
+
+        <!-- ▼ CSVから生成したプルダウン -->
+        <option value="OK73シンナー">OK73シンナー</option>
+        <option value="アセトン">アセトン</option>
+        <option value="アクリル酸メチル">アクリル酸メチル</option>
+        <option value="イソプロピルアルコール">イソプロピルアルコール</option>
+        <option value="エチルアルコール">エチルアルコール</option>
+        <option value="キシレン">キシレン</option>
+        <option value="酢酸エチル">酢酸エチル</option>
+        <option value="酢酸ブチル">酢酸ブチル</option>
+        <option value="酸化プロピレン">酸化プロピレン</option>
+        <option value="シクロヘキサノン">シクロヘキサノン</option>
+        <option value="シクロヘキサン">シクロヘキサン</option>
+        <option value="シクロペンタン">シクロペンタン</option>
+        <option value="1,2-ジクロロエタン">1,2-ジクロロエタン</option>
+        <option value="ジクロロメタン">ジクロロメタン</option>
+        <option value="スチレン">スチレン</option>
+        <option value="ジエチルカーボネート">ジエチルカーボネート</option>
+        <option value="ジメチルカーボネート">ジメチルカーボネート</option>
+        <option value="テトラヒドロフラン">テトラヒドロフラン</option>
+        <option value="テトラフルオロエチルトリフルオロエチルエーテル">テトラフルオロエチルトリフルオロエチルエーテル</option>
+        <option value="トランス-1,2-ジクロロエチレン">トランス-1,2-ジクロロエチレン</option>
+        <option value="トリエチルアミン">トリエチルアミン</option>
+        <option value="トルエン">トルエン</option>
+        <option value="ノルマルヘキサン">ノルマルヘキサン</option>
+        <option value="ノルマルプロピルブロマイド">ノルマルプロピルブロマイド</option>
+        <option value="PGMME">PGMME</option>
+        <option value="PGMMEAc">PGMMEAc</option>
+        <option value="ベンゼン">ベンゼン</option>
+        <option value="メチルアルコール">メチルアルコール</option>
+        <option value="メチルエチルケトン">メチルエチルケトン</option>
+        <option value="メチルシクロヘキサン">メチルシクロヘキサン</option>
+        <option value="α-ターピネン">α-ターピネン</option>
+    </select>
+
     <label>室温（℃）</label>
-    <input type="number" id="roomTemp">
+    <input type="number" id="roomTemp" step="0.1">
 
     <label>ガス作製量（L）</label>
-    <input type="number" id="gasVolume">
+    <input type="number" id="gasVolume" step="0.01">
 
     <label>薬液の分子量</label>
-    <input type="number" id="molWeight">
-
-    <label>作製濃度（ppm）</label>
-    <input type="number" id="makePPM2">
+    <input type="number" id="molWeight" step="0.01">
 
     <label>薬液の比重</label>
-    <input type="number" id="density">
+    <input type="number" id="density" step="0.001">
+
+    <label>作製濃度（ppm）</label>
+    <input type="number" id="makePPM2" step="0.01">
 
     <button class="calc-btn" onclick="calcLiquid()">計算する</button>
 
     <div class="result" id="liquidResult"></div>
 
     <div class="formula-card">
-        <div class="formula-title">薬液採取量計算式</div>
-        <div class="formula-math">
-            <div class="fraction">
-                <span class="top">273</span>
-                <span class="bottom">273 + 室温</span>
-            </div>
-            ×
-            <div class="fraction">
-                <span class="top">ガス作製量 × 分子量 × 作製濃度</span>
-                <span class="bottom">22.4 × 1000 × 比重</span>
-            </div>
-            = 採取量(μL)
-        </div>
+        <div class="formula-title">ガス情報</div>
+        ガス名：<span id="infoName"></span><br>
+        略名/化学式：<span id="infoShort"></span><br>
+        化学式・別名：<span id="infoAlias"></span><br>
+        分子量：<span id="infoMW"></span><br>
+        比重：<span id="infoDensity"></span><br>
+        LEL(vol%)：<span id="infoLEL"></span><br>
+        作製ガス濃度（%LEL）：<span id="infoLEL40"></span><br>
+        換算濃度(ppm)：<span id="infoPPM"></span>
     </div>
 
     <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 </div>
+<!-- ▼ 気体採取量 -->
+<div id="gas" class="app-card">
+    <h2>気体採取量</h2>
 
-<!-- ▼ アンプル -->
+    <label>室温（℃）</label>
+    <input type="number" id="gasTemp" step="0.1">
+
+    <label>ガス作製量（L）</label>
+    <input type="number" id="gasMake" step="0.01">
+
+    <label>作製濃度（ppm）</label>
+    <input type="number" id="gasPPM" step="0.01">
+
+    <button class="calc-btn" onclick="calcGas()">計算する</button>
+
+    <div class="result" id="gasResult"></div>
+
+    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
+</div>
+
+
+<!-- ▼ アンプル採取量 -->
 <div id="ampule" class="app-card">
-    <h2>アンプル希釈量計算</h2>
+    <h2>アンプル採取量</h2>
 
-    <label>アンプルガス封入量（cc）</label>
-    <input type="number" id="amp_cc">
+    <label>アンプル濃度（ppm）</label>
+    <input type="number" id="ampPPM" step="0.01">
 
-    <label>作りたいガス濃度（ppm）</label>
-    <input type="number" id="amp_ppm">
+    <label>ガス作製量（L）</label>
+    <input type="number" id="ampMake" step="0.01">
 
     <button class="calc-btn" onclick="calcAmpule()">計算する</button>
 
     <div class="result" id="ampResult"></div>
 
-    <div class="formula-card">
-        <div class="formula-title">希釈量計算式</div>
-        <div class="formula-math">
-            <div class="fraction">
-                <span class="top">アンプル封入量 × 1000</span>
-                <span class="bottom">作製濃度(ppm)</span>
-            </div>
-            = ガス作製希釈量(L)
-        </div>
-    </div>
-
     <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 </div>
-
 <script>
-function showTool(id) {
+// ▼ 画面切替
+function openCard(id){
     menu.style.display = "none";
     gas.style.display = "none";
     liquid.style.display = "none";
@@ -283,31 +241,68 @@ function showTool(id) {
     document.getElementById(id).style.display = "block";
 }
 
-function backMenu() {
-    menu.style.display = "block";
+function backMenu(){
     gas.style.display = "none";
     liquid.style.display = "none";
     ampule.style.display = "none";
+    menu.style.display = "block";
 }
+// ▼ CSV → JSON化したガスデータベース（完全版）
+const gasDB = {
+  "OK73シンナー": { short:"OK-73", alias:"C6H1203", mw:99.77, density:0.94, LEL:2.3, LEL40:40, ppm:9200 },
+  "アセトン": { short:"C3H6O", alias:"", mw:58.08, density:0.789, LEL:2.15, LEL40:40, ppm:8600 },
+  "アクリル酸メチル": { short:"C4H6O2", alias:"", mw:86.09, density:0.956, LEL:2.4, LEL40:40, ppm:9600 },
+  "イソプロピルアルコール": { short:"IPA", alias:"C3H8O", mw:60.09, density:0.786, LEL:2, LEL40:40, ppm:8000 },
+  "エチルアルコール": { short:"C2H5OH", alias:"エタノール", mw:46.07, density:0.789, LEL:3.3, LEL40:40, ppm:13200 },
+  "キシレン": { short:"C8H10", alias:"", mw:106.17, density:0.861, LEL:1, LEL40:40, ppm:4000 },
+  "酢酸エチル": { short:"EtAc", alias:"C4H8O2", mw:88.11, density:0.906, LEL:2.1, LEL40:40, ppm:8400 },
+  "酢酸ブチル": { short:"C6H12O2", alias:"", mw:116.16, density:0.882, LEL:1.4, LEL40:40, ppm:5600 },
+  "酸化プロピレン": { short:"PO", alias:"C3H6O", mw:58.08, density:0.83, LEL:2.8, LEL40:40, ppm:11200 },
+  "シクロヘキサノン": { short:"C6H10O", alias:"", mw:98.15, density:0.947, LEL:1.1, LEL40:40, ppm:4400 },
+  "シクロヘキサン": { short:"C6H12", alias:"", mw:84.16, density:0.779, LEL:1.3, LEL40:40, ppm:5200 },
+  "シクロペンタン": { short:"C5H10", alias:"", mw:70.1, density:0.746, LEL:1.4, LEL40:40, ppm:5600 },
+  "1,2-ジクロロエタン": { short:"EDC", alias:"C2H4Cl2", mw:98.97, density:1.28, LEL:6.2, LEL40:40, ppm:24800 },
+  "ジクロロメタン": { short:"CH2Cl2", alias:"塩化メチレン", mw:84.94, density:1.335, LEL:13, LEL40:40, ppm:52000 },
+  "スチレン": { short:"C8H8", alias:"", mw:104.04, density:0.907, LEL:1.1, LEL40:40, ppm:4400 },
+  "ジエチルカーボネート": { short:"C5H10O3", alias:"炭酸ジエチル", mw:118.13, density:0.975, LEL:0, LEL40:0, ppm:0 },
+  "ジメチルカーボネート": { short:"C3H6O3", alias:"炭酸ジメチル", mw:90.08, density:1.07, LEL:9.5, LEL40:40, ppm:38000 },
+  "テトラヒドロフラン": { short:"THF", alias:"C4H8O", mw:72.1, density:0.888, LEL:2, LEL40:40, ppm:8000 },
+  "テトラフルオロエチルトリフルオロエチルエーテル": { short:"C4H3OF7", alias:"", mw:200.05, density:1.487, LEL:0, LEL40:0, ppm:0 },
+  "トランス-1,2-ジクロロエチレン": { short:"C2H2Cl2", alias:"", mw:96.94, density:1.257, LEL:0, LEL40:0, ppm:0 },
+  "トリエチルアミン": { short:"TEA", alias:"C6H15N", mw:101.19, density:0.725, LEL:1.2, LEL40:40, ppm:4800 },
+  "トルエン": { short:"C7H8", alias:"", mw:92.14, density:0.866, LEL:1.2, LEL40:40, ppm:4800 },
+  "ノルマルヘキサン": { short:"n-C6H14", alias:"", mw:86.17, density:0.678, LEL:1.2, LEL40:40, ppm:4800 },
+  "ノルマルプロピルブロマイド": { short:"C3H7Br", alias:"ABZOL-JG", mw:122.99, density:1.34, LEL:4, LEL40:40, ppm:16000 },
+  "PGMME": { short:"C4H10O2", alias:"プロピレングリコールモノメチルエーテル", mw:90.12, density:0.923, LEL:1.6, LEL40:40, ppm:6400 },
+  "PGMMEAc": { short:"C6H12O3", alias:"プロピレングリコールモノメチルエーテルアセテート", mw:132.16, density:0.996, LEL:1.3, LEL40:40, ppm:5200 },
+  "ベンゼン": { short:"C6H6", alias:"", mw:78.11, density:0.873, LEL:1.2, LEL40:40, ppm:4800 },
+  "メチルアルコール": { short:"CH3OH", alias:"メタノール", mw:32.04, density:0.791, LEL:5.5, LEL40:40, ppm:22000 },
+  "メチルエチルケトン": { short:"MEK", alias:"C4H8O", mw:72.12, density:0.805, LEL:1.8, LEL40:40, ppm:7200 },
+  "メチルシクロヘキサン": { short:"C7H14", alias:"", mw:98.18, density:0.77, LEL:1.15, LEL40:40, ppm:4600 },
+  "α-ターピネン": { short:"ATRP", alias:"C10H16", mw:136.23, density:0.84, LEL:0, LEL40:0, ppm:0 }
+};
+// ▼ ガス選択時に情報＆分子量・比重を反映
+function loadGasData() {
+    const key = gasSelect.value;
+    if (!key || !gasDB[key]) return;
 
-/* ▼ 気体ガス採取量 */
-function calcGas() {
-    const v = parseFloat(makeVolume.value);
-    const ppm = parseFloat(makePPM.value);
-    const cyl = parseFloat(cylinderPPM.value);
+    const g = gasDB[key];
 
-    if (v <= 0 || ppm <= 0 || cyl <= 0)
-        return gasResult.innerHTML = "入力値が不正です。";
+    // 入力欄に反映（計算用）
+    molWeight.value = g.mw;
+    density.value = g.density;
 
-    const denom = cyl - ppm;
-    if (denom <= 0)
-        return gasResult.innerHTML = "分母が 0 以下です。";
-
-    const result = (v * ppm / denom) * 1000;
-    gasResult.innerHTML = "採取量：" + result.toFixed(2) + " mL";
+    // 情報表示
+    infoName.innerText = key;
+    infoShort.innerText = g.short;
+    infoAlias.innerText = g.alias;
+    infoMW.innerText = g.mw;
+    infoDensity.innerText = g.density;
+    infoLEL.innerText = g.LEL;
+    infoLEL40.innerText = g.LEL40;
+    infoPPM.innerText = g.ppm;
 }
-
-/* ▼ 薬液採取量 */
+// ▼ 薬液採取量計算
 function calcLiquid() {
     const t = parseFloat(roomTemp.value);
     const v = parseFloat(gasVolume.value);
@@ -315,38 +310,45 @@ function calcLiquid() {
     const ppm = parseFloat(makePPM2.value);
     const d = parseFloat(density.value);
 
-    if (t < 0 || v <= 0 || mw <= 0 || ppm <= 0 || d <= 0)
-        return liquidResult.innerHTML = "入力値が不正です。";
+    if (isNaN(t) || isNaN(v) || isNaN(mw) || isNaN(ppm) || isNaN(d) ||
+        v <= 0 || mw <= 0 || ppm <= 0 || d <= 0) {
+        liquidResult.innerHTML = "入力値が不正です。";
+        return;
+    }
 
     const tempFactor = 273 / (273 + t);
     const result = tempFactor * (v * mw * ppm) / (22.4 * 1000 * d);
 
     liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
+// ▼ 気体採取量計算
+function calcGas() {
+    const t = parseFloat(gasTemp.value);
+    const v = parseFloat(gasMake.value);
+    const ppm = parseFloat(gasPPM.value);
 
-/* ▼ アンプル希釈量 */
-function calcAmpule() {
-    const cc = parseFloat(amp_cc.value);
-    const ppm = parseFloat(amp_ppm.value);
+    if (isNaN(t) || isNaN(v) || isNaN(ppm) || v <= 0 || ppm <= 0) {
+        gasResult.innerHTML = "入力値が不正です。";
+        return;
+    }
 
-    if (cc <= 0 || ppm <= 0)
-        return ampResult.innerHTML = "入力値が不正です。";
+    const tempFactor = 273 / (273 + t);
+    const result = tempFactor * (v * ppm) / (22.4 * 1000);
 
-    const result = (cc * 1000) / ppm;
-
-    ampResult.innerHTML =
-        "ガス作製希釈量：" + result.toFixed(2) + " L";
+    gasResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
+// ▼ アンプル採取量計算
+function calcAmpule() {
+    const ppm = parseFloat(ampPPM.value);
+    const v = parseFloat(ampMake.value);
 
-/* ▼ Service Worker 登録（v3） */
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .catch(err => console.log('SW registration failed:', err));
-    });
+    if (isNaN(ppm) || isNaN(v) || ppm <= 0 || v <= 0) {
+        ampResult.innerHTML = "入力値が不正です。";
+        return;
+    }
+
+    const result = (v * ppm) / (22.4 * 1000);
+
+    ampResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
 </script>
-
-</body>
-</html>
-
