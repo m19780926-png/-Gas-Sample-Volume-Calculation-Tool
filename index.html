@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>採取量計算ツール</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4CAF50">
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+    background: #eef1f5;
+    padding: 20px;
+    margin: 0;
+}
+
+.app-card {
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    max-width: 600px;
+    margin: auto;
+    display: none;
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.menu-item {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.menu-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4CAF50, #2e8b3f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    margin-right: 18px;
+}
+
+.menu-text {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+label {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 18px;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 6px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+    box-sizing: border-box;
+}
+
+button.calc-btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 22px;
+    margin-top: 26px;
+    background: linear-gradient(135deg, #4CAF50, #2e8b3f);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.back-btn {
+    margin-top: 24px;
+    width: 100%;
+    padding: 14px;
+    font-size: 20px;
+    background: #888;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.result {
+    margin-top: 28px;
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.formula-card {
+    margin-top: 30px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 6px solid #000000;
+}
+
+.formula-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.formula-math {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 17px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.fraction {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.fraction .top {
+    display: block;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #000;
+}
+
+.fraction .bottom {
+    display: block;
+    padding-top: 6px;
+}
+</style>
+</head>
+<body>
+
+<!-- ▼ ホーム -->
+<div id="menu" class="app-card" style="display:block;">
+    <h2>採取量計算ツール</h2>
+
+    <div class="menu-item" onclick="showTool('gas')">
+        <div class="menu-icon">💨</div>
+        <div class="menu-text">気体ガス採取量</div>
+    </div>
+
+    <div class="menu-item" onclick="showTool('liquid')">
+        <div class="menu-icon">💧</div>
+        <div class="menu-text">薬液採取量</div>
+    </div>
+
+    <div class="menu-item" onclick="showTool('ampule')">
+        <div class="menu-icon">🧪</div>
+        <div class="menu-text">アンプル希釈量</div>
+    </div>
+</div>
+
+<!-- ▼ 気体 -->
+<div id="gas" class="app-card">
+    <h2>気体ガス採取量</h2>
+
+    <label>希釈ガス作製量（L）</label>
+    <input type="number" id="makeVolume">
+
+    <label>作製濃度（ppm）</label>
+    <input type="number" id="makePPM">
+
+    <label>ボンベガス濃度（ppm）</label>
+    <input type="number" id="cylinderPPM">
+
+    <button class="calc-btn" onclick="calcGas()">計算する</button>
+
+    <div class="result" id="gasResult"></div>
+
+    <div class="formula-card">
+        <div class="formula-title">気体ガス採取量計算式</div>
+        <div class="formula-math">
+            <div class="fraction">
+                <span class="top">希釈ガス作製量 × 作製濃度</span>
+                <span class="bottom">ボンベ濃度 − 作製濃度</span>
+            </div>
+            × 1000 = 採取量(mL)
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
+</div>
+
+<!-- ▼ 薬液 -->
+<div id="liquid" class="app-card">
+    <h2>薬液採取量</h2>
+
+    <label>室温（℃）</label>
+    <input type="number" id="roomTemp">
+
+    <label>ガス作製量（L）</label>
+    <input type="number" id="gasVolume">
+
+    <label>薬液の分子量</label>
+    <input type="number" id="molWeight">
+
+    <label>作製濃度（ppm）</label>
+    <input type="number" id="makePPM2">
+
+    <label>薬液の比重</label>
+    <input type="number" id="density">
+
+    <button class="calc-btn" onclick="calcLiquid()">計算する</button>
+
+    <div class="result" id="liquidResult"></div>
+
+    <div class="formula-card">
+        <div class="formula-title">薬液採取量計算式</div>
+        <div class="formula-math">
+            <div class="fraction">
+                <span class="top">273</span>
+                <span class="bottom">273 + 室温</span>
+            </div>
+            ×
+            <div class="fraction">
+                <span class="top">ガス作製量 × 分子量 × 作製濃度</span>
+                <span class="bottom">22.4 × 1000 × 比重</span>
+            </div>
+            = 採取量(μL)
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
+</div>
+
+<!-- ▼ アンプル -->
+<div id="ampule" class="app-card">
+    <h2>アンプル希釈量計算</h2>
+
+    <label>アンプルガス封入量（cc）</label>
+    <input type="number" id="amp_cc">
+
+    <label>作りたいガス濃度（ppm）</label>
+    <input type="number" id="amp_ppm">
+
+    <button class="calc-btn" onclick="calcAmpule()">計算する</button>
+
+    <div class="result" id="ampResult"></div>
+
+    <div class="formula-card">
+        <div class="formula-title">希釈量計算式</div>
+        <div class="formula-math">
+            <div class="fraction">
+                <span class="top">アンプル封入量 × 1000</span>
+                <span class="bottom">作製濃度(ppm)</span>
+            </div>
+            = ガス作製希釈量(L)
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
+</div>
+
+<script>
+function showTool(id) {
+    menu.style.display = "none";
+    gas.style.display = "none";
+    liquid.style.display = "none";
+    ampule.style.display = "none";
+    document.getElementById(id).style.display = "block";
+}
+
+function backMenu() {
+    menu.style.display = "block";
+    gas.style.display = "none";
+    liquid.style.display = "none";
+    ampule.style.display = "none";
+}
+
+/* ▼ 気体ガス採取量 */
+function calcGas() {
+    const v = parseFloat(makeVolume.value);
+    const ppm = parseFloat(makePPM.value);
+    const cyl = parseFloat(cylinderPPM.value);
+
+    if (v <= 0 || ppm <= 0 || cyl <= 0)
+        return gasResult.innerHTML = "入力値が不正です。";
+
+    const denom = cyl - ppm;
+    if (denom <= 0)
+        return gasResult.innerHTML = "分母が 0 以下です。";
+
+    const result = (v * ppm / denom) * 1000;
+    gasResult.innerHTML = "採取量：" + result.toFixed(2) + " mL";
+}
+
+/* ▼ 薬液採取量 */
+function calcLiquid() {
+    const t = parseFloat(roomTemp.value);
+    const v = parseFloat(gasVolume.value);
+    const mw = parseFloat(molWeight.value);
+    const ppm = parseFloat(makePPM2.value);
+    const d = parseFloat(density.value);
+
+    if (t < 0 || v <= 0 || mw <= 0 || ppm <= 0 || d <= 0)
+        return liquidResult.innerHTML = "入力値が不正です。";
+
+    const tempFactor = 273 / (273 + t);
+    const result = tempFactor * (v * mw * ppm) / (22.4 * 1000 * d);
+
+    liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
+}
+
+/* ▼ アンプル希釈量 */
+function calcAmpule() {
+    const cc = parseFloat(amp_cc.value);
+    const ppm = parseFloat(amp_ppm.value);
+
+    if (cc <= 0 || ppm <= 0)
+        return ampResult.innerHTML = "入力値が不正です。";
+
+    const result = (cc * 1000) / ppm;
+
+    ampResult.innerHTML =
+        "ガス作製希釈量：" + result.toFixed(2) + " L";
+}
+
+/* ▼ Service Worker 登録（v3） */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .catch(err => console.log('SW registration failed:', err));
+    });
+}
+</script>
+
+</body>
+</html>
+
