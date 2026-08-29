@@ -300,13 +300,36 @@ function loadGasData() {
     infoPPM.innerText = g.ppm;
 }
 
+
+    
+// ▼ ppm または %LEL を ppm に変換して返す
+function getPPMValue() {
+    const unit = unitSelect.value;
+    const val = parseFloat(makePPM2.value);
+
+    if (unit === "ppm") {
+        return val;
+    }
+
+    // ▼ %LEL → ppm 変換
+    const key = gasSelect.value;
+    const g = gasDB[key];
+
+    // CSVの「40%LEL の ppm値」を使う
+    return g.ppm * (val / 40);
+}
+
+
+
 // ▼ 薬液採取量計算
 function calcLiquid() {
     const t = parseFloat(roomTemp.value);
     const v = parseFloat(gasVolume.value);
     const mw = parseFloat(molWeight.value);
-    const ppm = parseFloat(makePPM2.value);
     const d = parseFloat(density.value);
+
+    // ▼ ppm または %LEL を ppm に変換
+    const ppm = getPPMValue();
 
     if (isNaN(t) || isNaN(v) || isNaN(mw) || isNaN(ppm) || isNaN(d) ||
         v <= 0 || mw <= 0 || ppm <= 0 || d <= 0) {
@@ -320,6 +343,11 @@ function calcLiquid() {
     liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
 
+
+
+
+
+    
 // ▼ 気体採取量計算
 function calcGas() {
     const t = parseFloat(gasTemp.value);
@@ -354,13 +382,13 @@ function calcAmpule() {
 // ▼ 入力値クリア（薬液）
 function clearLiquidInputs() {
     gasSelect.value = "";
+    unitSelect.value = "ppm";  // ★ 単位を初期化
     roomTemp.value = "";
     gasVolume.value = "";
     molWeight.value = "";
     density.value = "";
     makePPM2.value = "";
 
-    // 表示情報もクリア
     infoName.innerText = "";
     infoShort.innerText = "";
     infoAlias.innerText = "";
@@ -372,6 +400,7 @@ function clearLiquidInputs() {
 
     liquidResult.innerHTML = "";
 }
+
 
     
 </script>
