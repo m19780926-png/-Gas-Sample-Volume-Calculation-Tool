@@ -1,4 +1,4 @@
-const CACHE_NAME = "gas-tool-cache-v1";
+const CACHE_NAME = "gas-tool-cache-v3";
 const urlsToCache = [
   "./",
   "./index.html",
