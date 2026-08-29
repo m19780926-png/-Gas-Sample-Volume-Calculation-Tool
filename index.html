@@ -230,10 +230,11 @@ input, select {
 
 <!-- ▼ アンプル採取量 -->
 <div id="ampule" class="app-card">
-    <h2>アンプル採取量</h2>
+    <h2>アンプル希釈量計算</h2>
 
-    <label>アンプル濃度（ppm）</label>
-    <input type="number" id="ampPPM" step="0.01">
+   <label>アンプルガス封入量 (cc)</label>
+<input type="number" id="amp_cc" step="0.01">
+
 
     <label>ガス作製量（L）</label>
     <input type="number" id="ampMake" step="0.01">
@@ -400,19 +401,22 @@ function calcGas() {
 
     gasResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
-// ▼ アンプル採取量計算
+// ▼ アンプル希釈量計算
 function calcAmpule() {
-    const ppm = parseFloat(ampPPM.value);
-    const v = parseFloat(ampMake.value);
+    const cc = parseFloat(amp_cc.value);   // アンプルガス封入量（cc）
+    const v  = parseFloat(ampMake.value);  // 希釈後の作製量（L）
 
-    if (isNaN(ppm) || isNaN(v) || ppm <= 0 || v <= 0) {
+    if (isNaN(cc) || isNaN(v) || cc <= 0 || v <= 0) {
         ampResult.innerHTML = "入力値が不正です。";
         return;
     }
 
-    const result = (v * ppm) / (22.4 * 1000);
+    // アンプルガス封入量（cc） → L に変換して計算
+    const ccToL = cc / 1000;
 
-    ampResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
+    const result = (ccToL) / v;  // 希釈後濃度（Lあたりのガス量）
+
+    ampResult.innerHTML = "希釈濃度：" + result.toFixed(6) + "（Lあたり）";
 }
 
 // ▼ 入力値クリア（薬液）
