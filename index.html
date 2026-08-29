@@ -244,6 +244,11 @@ input, select {
 
 <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 
+    <button class="back-btn" style="background:#d9534f;" onclick="clearAmpInputs()">
+  入力値クリア
+</button>
+
+    
 </div>
 <script>
 // ▼ 画面切替
@@ -417,6 +422,14 @@ function calcAmpule() {
   ampResult.innerHTML = "希釈量：" + result.toFixed(2) + " L";
 }
 
+    // ▼入力値クリア（アンプル）
+function clearAmpInputs() {
+    amp_cc.value = "";
+    ampPPM.value = "";
+    ampResult.innerHTML = "";
+}
+
+    
 
 // ▼ 入力値クリア（薬液）
 function clearLiquidInputs() {
