@@ -119,47 +119,15 @@ input, select {
         アンプル採取量
     </button>
 </div>
-<!-- ▼ 薬液採取量（完成版） -->
+
+ <!-- ▼ 薬液採取量（完成版） -->
 <div id="liquid" class="app-card">
     <h2>薬液採取量</h2>
 
     <label>ガス名</label>
     <select id="gasSelect" onchange="loadGasData()">
         <option value="">選択してください</option>
-
-        <!-- ▼ CSVから生成したプルダウン -->
-   <option value="OK73シンナー">OK73シンナー（C6H1203）</option>
-<option value="アセトン">アセトン（C3H6O）</option>
-<option value="アクリル酸メチル">アクリル酸メチル（C4H6O2）</option>
-<option value="イソプロピルアルコール">イソプロピルアルコール（C3H8O）</option>
-<option value="エチルアルコール">エチルアルコール（C2H5OH）</option>
-<option value="キシレン">キシレン（C8H10）</option>
-<option value="酢酸エチル">酢酸エチル（C4H8O2）</option>
-<option value="酢酸ブチル">酢酸ブチル（C6H12O2）</option>
-<option value="酸化プロピレン">酸化プロピレン（C3H6O）</option>
-<option value="シクロヘキサノン">シクロヘキサノン（C6H10O）</option>
-<option value="シクロヘキサン">シクロヘキサン（C6H12）</option>
-<option value="シクロペンタン">シクロペンタン（C5H10）</option>
-<option value="1,2-ジクロロエタン">1,2-ジクロロエタン（C2H4Cl2）</option>
-<option value="ジクロロメタン">ジクロロメタン（CH2Cl2）</option>
-<option value="スチレン">スチレン（C8H8）</option>
-<option value="ジエチルカーボネート">ジエチルカーボネート（C5H10O3）</option>
-<option value="ジメチルカーボネート">ジメチルカーボネート（C3H6O3）</option>
-<option value="テトラヒドロフラン">テトラヒドロフラン（C4H8O）</option>
-<option value="テトラフルオロエチルトリフルオロエチルエーテル">テトラフルオロエチルトリフルオロエチルエーテル（C4H3OF7）</option>
-<option value="トランス-1,2-ジクロロエチレン">トランス-1,2-ジクロロエチレン（C2H2Cl2）</option>
-<option value="トリエチルアミン">トリエチルアミン（C6H15N）</option>
-<option value="トルエン">トルエン（C7H8）</option>
-<option value="ノルマルヘキサン">ノルマルヘキサン（C6H14）</option>
-<option value="ノルマルプロピルブロマイド">ノルマルプロピルブロマイド（C3H7Br）</option>
-<option value="PGMME">PGMME（C4H10O2）</option>
-<option value="PGMMEAc">PGMMEAc（C6H12O3）</option>
-<option value="ベンゼン">ベンゼン（C6H6）</option>
-<option value="メチルアルコール">メチルアルコール（CH3OH）</option>
-<option value="メチルエチルケトン">メチルエチルケトン（C4H8O）</option>
-<option value="メチルシクロヘキサン">メチルシクロヘキサン（C7H14）</option>
-<option value="α-ターピネン">α-ターピネン（C10H16）</option>
-
+        <!-- ★ プルダウンは JS で自動生成するのでここは空のまま -->
     </select>
 
     <label>室温（℃）</label>
@@ -195,7 +163,10 @@ input, select {
 
     <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 </div>
-<!-- ▼ 気体採取量 -->
+
+    
+    
+    <!-- ▼ 気体採取量 -->
 <div id="gas" class="app-card">
     <h2>気体採取量</h2>
 
@@ -282,18 +253,38 @@ const gasDB = {
   "メチルシクロヘキサン": { short:"C7H14", alias:"", mw:98.18, density:0.77, LEL:1.15, LEL40:40, ppm:4600 },
   "α-ターピネン": { short:"ATRP", alias:"C10H16", mw:136.23, density:0.84, LEL:0, LEL40:0, ppm:0 }
 };
-// ▼ ガス選択時に情報＆分子量・比重を反映
+
+  // ▼ プルダウン自動生成（ガス名 + 略名/化学式 + 別名）
+function buildGasSelect() {
+    const select = document.getElementById("gasSelect");
+
+    for (const key in gasDB) {
+        const g = gasDB[key];
+
+        // 表示名を作成（略名/化学式 + 別名）
+        const display =
+            `${key}（${g.short}${g.alias ? " / " + g.alias : ""}）`;
+
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = display;
+
+        select.appendChild(opt);
+    }
+}
+
+// ページ読み込み時に実行
+buildGasSelect();
+  // ▼ ガス選択時に情報＆分子量・比重を反映
 function loadGasData() {
     const key = gasSelect.value;
     if (!key || !gasDB[key]) return;
 
     const g = gasDB[key];
 
-    // 入力欄に反映（計算用）
     molWeight.value = g.mw;
     density.value = g.density;
 
-    // 情報表示
     infoName.innerText = key;
     infoShort.innerText = g.short;
     infoAlias.innerText = g.alias;
@@ -303,6 +294,7 @@ function loadGasData() {
     infoLEL40.innerText = g.LEL40;
     infoPPM.innerText = g.ppm;
 }
+
 // ▼ 薬液採取量計算
 function calcLiquid() {
     const t = parseFloat(roomTemp.value);
@@ -322,13 +314,14 @@ function calcLiquid() {
 
     liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
+
 // ▼ 気体採取量計算
 function calcGas() {
     const t = parseFloat(gasTemp.value);
     const v = parseFloat(gasMake.value);
     const ppm = parseFloat(gasPPM.value);
 
-    if (isNaN(t) || isNaN(v) || isNaN(ppm) || v <= 0 || ppm <= 0) {
+    if (isNaNaN(t) || isNaN(v) || isNaN(ppm) || v <= 0 || ppm <= 0) {
         gasResult.innerHTML = "入力値が不正です。";
         return;
     }
