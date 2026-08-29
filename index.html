@@ -403,21 +403,20 @@ function calcGas() {
 }
 // ▼ アンプル希釈量計算
 function calcAmpule() {
-    const cc = parseFloat(amp_cc.value);   // アンプルガス封入量（cc）
-    const v  = parseFloat(ampMake.value);  // 希釈後の作製量（L）
+  const cc  = parseFloat(amp_cc.value);   // アンプルガス封入量 (cc)
+  const ppm = parseFloat(ampPPM.value);   // 作りたいガス濃度 (ppm)
 
-    if (isNaN(cc) || isNaN(v) || cc <= 0 || v <= 0) {
-        ampResult.innerHTML = "入力値が不正です。";
-        return;
-    }
+  if (isNaN(cc) || isNaN(ppm) || cc <= 0 || ppm <= 0) {
+    ampResult.innerHTML = "入力値が不正です。";
+    return;
+  }
 
-    // アンプルガス封入量（cc） → L に変換して計算
-    const ccToL = cc / 1000;
+  // 希釈量計算式：アンプル封入量 × 1000 ÷ 作製濃度(ppm)
+  const result = (cc * 1000) / ppm;
 
-    const result = (ccToL) / v;  // 希釈後濃度（Lあたりのガス量）
-
-    ampResult.innerHTML = "希釈濃度：" + result.toFixed(6) + "（Lあたり）";
+  ampResult.innerHTML = "ガス作製希釈量：" + result.toFixed(2) + " L";
 }
+
 
 // ▼ 入力値クリア（薬液）
 function clearLiquidInputs() {
