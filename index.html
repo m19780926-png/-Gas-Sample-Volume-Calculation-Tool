@@ -230,20 +230,20 @@ input, select {
 
 <!-- ▼ アンプル採取量 -->
 <div id="ampule" class="app-card">
-    <h2>アンプル希釈量計算</h2>
+  <h2>アンプル希釈量計算</h2>
 
-   <label>アンプルガス封入量 (cc)</label>
+<label>アンプルガス封入量 (cc)</label>
 <input type="number" id="amp_cc" step="0.01">
 
+<label>作りたいガス濃度 (ppm)</label>
+<input type="number" id="ampPPM" step="0.01">
 
-    <label>ガス作製量（L）</label>
-    <input type="number" id="ampMake" step="0.01">
+<button class="calc-btn" onclick="calcAmpule()">計算する</button>
 
-    <button class="calc-btn" onclick="calcAmpule()">計算する</button>
+<div class="result" id="ampResult"></div>
 
-    <div class="result" id="ampResult"></div>
+<button class="back-btn" onclick="backMenu()">✖ ホームに戻る</button>
 
-    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 </div>
 <script>
 // ▼ 画面切替
