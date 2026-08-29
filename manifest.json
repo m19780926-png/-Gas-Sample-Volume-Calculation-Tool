@@ -1,7 +1,9 @@
 {
   "name": "採取量計算ツール",
   "short_name": "採取量計算",
-  "start_url": "./index.html",
+
+  "start_url": "/-Gas-Sample-Volume-Calculation-Tool/index.html?v=3"
+
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
