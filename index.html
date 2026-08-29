@@ -350,4 +350,28 @@ function calcAmpule() {
 
     ampResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
+
+// ▼ 入力値クリア（薬液）
+function clearLiquidInputs() {
+    gasSelect.value = "";
+    roomTemp.value = "";
+    gasVolume.value = "";
+    molWeight.value = "";
+    density.value = "";
+    makePPM2.value = "";
+
+    // 表示情報もクリア
+    infoName.innerText = "";
+    infoShort.innerText = "";
+    infoAlias.innerText = "";
+    infoMW.innerText = "";
+    infoDensity.innerText = "";
+    infoLEL.innerText = "";
+    infoLEL40.innerText = "";
+    infoPPM.innerText = "";
+
+    liquidResult.innerHTML = "";
+}
+
+    
 </script>
