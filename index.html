@@ -120,14 +120,15 @@ input, select {
     </button>
 </div>
 
- <!-- ▼ 薬液採取量（完成版） -->
+
+
+<!-- ▼ 薬液採取量（完成版） -->
 <div id="liquid" class="app-card">
     <h2>薬液採取量</h2>
 
     <label>ガス名</label>
     <select id="gasSelect" onchange="loadGasData()">
         <option value="">選択してください</option>
-        <!-- ★ プルダウンは JS で自動生成するのでここは空のまま -->
     </select>
 
     <label>室温（℃）</label>
@@ -147,6 +148,11 @@ input, select {
 
     <button class="calc-btn" onclick="calcLiquid()">計算する</button>
 
+    <!-- ★ 入力値クリアボタン（追加） -->
+    <button class="back-btn" style="background:#d9534f;" onclick="clearLiquidInputs()">
+        入力値クリア
+    </button>
+
     <div class="result" id="liquidResult"></div>
 
     <div class="formula-card">
@@ -164,7 +170,6 @@ input, select {
     <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 </div>
 
-    
     
     <!-- ▼ 気体採取量 -->
 <div id="gas" class="app-card">
