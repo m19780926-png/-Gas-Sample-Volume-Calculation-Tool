@@ -100,6 +100,8 @@ input, select {
     margin-top: 20px;
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+   
 </head>
 <body>
 
@@ -164,11 +166,19 @@ input, select {
 
     <div class="result" id="liquidResult"></div>
 
-    
-    <div class="formula-card">
+   <div class="formula-card">
     <div class="formula-title">薬液採取量計算式</div>
-    <div class="formula-math">
-        273 / (273 + 室温) × (ガス作製量 × 分子量 × 作製濃度) / (22.4 × 1000 × 比重)
+    <div class="formula-math" id="formulaMath">
+        
+
+\[
+        \frac{273}{273 + 室温}
+        \times
+        \frac{ガス作製量 \times 分子量 \times 作製濃度}
+             {22.4 \times 1000 \times 比重}
+        = 採取量 (\mu L)
+        \]
+          
     </div>
 </div>
 
