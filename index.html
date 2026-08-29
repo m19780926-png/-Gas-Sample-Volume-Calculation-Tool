@@ -143,8 +143,17 @@ input, select {
     <label>薬液の比重</label>
     <input type="number" id="density" step="0.001">
 
-    <label>作製濃度（ppm）</label>
-    <input type="number" id="makePPM2" step="0.01">
+<label>作製濃度の単位</label>
+<select id="unitSelect">
+    <option value="ppm">ppm</option>
+    <option value="lel">%LEL</option>
+</select>
+
+<label>作製濃度</label>
+<input type="number" id="makePPM2" step="0.01">
+
+    
+  
 
     <button class="calc-btn" onclick="calcLiquid()">計算する</button>
 
