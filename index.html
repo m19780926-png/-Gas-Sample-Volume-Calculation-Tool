@@ -430,23 +430,22 @@ function calcLiquid() {
     
 // ▼ 気体ガス採取量計算
 function calcGas() {
-    const makeVolume = parseFloat(makeVolume.value);
-    const makePPM = parseFloat(makePPM.value);
-    const cylinderPPM = parseFloat(cylinderPPM.value);
+    const v = parseFloat(makeVolume.value);      // 希釈ガス作製量 (L)
+    const ppm = parseFloat(makePPM.value);       // 作製濃度 (ppm)
+    const cyl = parseFloat(cylinderPPM.value);   // ボンベガス濃度 (ppm)
 
-    if (isNaN(makeVolume) || isNaN(makePPM) || isNaN(cylinderPPM) ||
-        makeVolume <= 0 || makePPM <= 0 || cylinderPPM <= 0) {
+    if (isNaN(v) || isNaN(ppm) || isNaN(cyl) || v <= 0 || ppm <= 0 || cyl <= 0) {
         gasResult.innerHTML = "入力値が不正です。";
         return;
     }
 
-    const denom = cylinderPPM - makePPM;
+    const denom = cyl - ppm;
     if (denom <= 0) {
         gasResult.innerHTML = "分母（ボンベ濃度 − 作製濃度）が 0 以下です。";
         return;
     }
 
-    const result = (makeVolume * makePPM / denom) * 1000;
+    const result = (v * ppm / denom) * 1000;
 
     gasResult.innerHTML = "採取量：" + result.toFixed(2) + " mL";
 }
