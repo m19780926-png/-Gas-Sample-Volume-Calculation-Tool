@@ -118,7 +118,7 @@ input, select {
     <h2>採取量計算ツール</h2>
 
     <button class="menu-btn" onclick="openCard('gas')">
-        気体採取量
+        気体ガス採取量
     </button>
 
     <button class="menu-btn" onclick="openCard('liquid')">
@@ -207,25 +207,47 @@ input, select {
 </div>
 
     
-    <!-- ▼ 気体採取量 -->
+ <!-- ▼ 気体ガス採取量 -->
 <div id="gas" class="app-card">
-    <h2>気体採取量</h2>
+  <h2>気体ガス採取量計算</h2>
 
-    <label>室温（℃）</label>
-    <input type="number" id="gasTemp" step="0.1">
+  <label>希釈ガス作製量 (L)</label>
+  <input type="number" id="makeVolume" step="0.01">
 
-    <label>ガス作製量（L）</label>
-    <input type="number" id="gasMake" step="0.01">
+  <label>作製濃度 (ppm)</label>
+  <input type="number" id="makePPM" step="0.01">
 
-    <label>作製濃度（ppm）</label>
-    <input type="number" id="gasPPM" step="0.01">
+  <label>ボンベガス濃度 (ppm)</label>
+  <input type="number" id="cylinderPPM" step="0.01">
 
-    <button class="calc-btn" onclick="calcGas()">計算する</button>
+  <button class="calc-btn" onclick="calcGas()">計算する</button>
 
-    <div class="result" id="gasResult"></div>
+  <div class="result" id="gasResult"></div>
 
-    <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
+  <!-- ▼ 計算式カード（MathJax） -->
+  <div class="formula-card">
+    <div class="formula-title">気体ガス採取量計算式</div>
+    <div class="formula-math">
+      
+
+\[
+      \frac{\text{希釈ガス作製量} \times \text{作製濃度}}
+           {\text{ボンベ濃度} - \text{作製濃度}}
+      \times 1000
+      = \text{採取量 (mL)}
+      \]
+
+
+    </div>
+  </div>
+
+  <button class="back-btn" style="background:#d9534f;" onclick="clearGasInputs()">
+    入力値クリア
+  </button>
+
+  <button class="back-btn" onclick="backMenu()">← ホームに戻る</button>
 </div>
+
 
 
 <!-- ▼ アンプル採取量 -->
@@ -405,28 +427,38 @@ function calcLiquid() {
 
     liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 }
-
-
-
-
-
     
-// ▼ 気体採取量計算
+// ▼ 気体ガス採取量計算
 function calcGas() {
-    const t = parseFloat(gasTemp.value);
-    const v = parseFloat(gasMake.value);
-    const ppm = parseFloat(gasPPM.value);
+    const makeVolume = parseFloat(makeVolume.value);
+    const makePPM = parseFloat(makePPM.value);
+    const cylinderPPM = parseFloat(cylinderPPM.value);
 
-    if (isNaNaN(t) || isNaN(v) || isNaN(ppm) || v <= 0 || ppm <= 0) {
+    if (isNaN(makeVolume) || isNaN(makePPM) || isNaN(cylinderPPM) ||
+        makeVolume <= 0 || makePPM <= 0 || cylinderPPM <= 0) {
         gasResult.innerHTML = "入力値が不正です。";
         return;
     }
 
-    const tempFactor = 273 / (273 + t);
-    const result = tempFactor * (v * ppm) / (22.4 * 1000);
+    const denom = cylinderPPM - makePPM;
+    if (denom <= 0) {
+        gasResult.innerHTML = "分母（ボンベ濃度 − 作製濃度）が 0 以下です。";
+        return;
+    }
 
-    gasResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
+    const result = (makeVolume * makePPM / denom) * 1000;
+
+    gasResult.innerHTML = "採取量：" + result.toFixed(2) + " mL";
 }
+
+// ▼ 入力値クリア
+function clearGasInputs() {
+    makeVolume.value = "";
+    makePPM.value = "";
+    cylinderPPM.value = "";
+    gasResult.innerHTML = "";
+}
+
 // ▼ アンプル希釈量計算
 function calcAmpule() {
   const cc  = parseFloat(amp_cc.value);   // アンプルガス封入量 (cc)
