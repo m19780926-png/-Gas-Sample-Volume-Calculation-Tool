@@ -314,10 +314,10 @@ function backMenu(){
     ampule.style.display = "none";
     menu.style.display = "block";
 }
-    // ▼ カウンター（初期値）
-let gasCount = 0;
-let liquidCount = 0;
-let ampCount = 0;
+// ▼ カウンター（保存された値を読み込む）
+let gasCount    = parseInt(localStorage.getItem("gasCount"))    || 0;
+let liquidCount = parseInt(localStorage.getItem("liquidCount")) || 0;
+let ampCount    = parseInt(localStorage.getItem("ampCount"))    || 0;
 
     function updateCounter() {
     counterInfo.innerHTML =
@@ -448,6 +448,7 @@ function calcLiquid() {
     liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
 
      updateCounter();   // ← ここで表示更新
+    saveCounter();   // ← 保存
 }
     
 // ▼ 気体ガス採取量計算
@@ -473,6 +474,7 @@ function calcGas() {
 
     gasResult.innerHTML = "採取量：" + result.toFixed(2) + " mL";
      updateCounter();   // ← ここで表示更新
+    saveCounter();   // ← 保存
 }
 
 // ▼ 入力値クリア
@@ -500,6 +502,7 @@ ampCount++;
 
   ampResult.innerHTML = "希釈量：" + result.toFixed(2) + " L";
      updateCounter();   // ← ここで表示更新
+    saveCounter();   // ← 保存
 }
 
     // ▼入力値クリア（アンプル）
@@ -536,7 +539,6 @@ function clearLiquidInputs() {
 
     
 </script>
-</script>   
 
 <!-- ★ ここに PWA の SW 登録コードを追加する -->
 <script>
