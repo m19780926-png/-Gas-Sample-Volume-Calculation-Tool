@@ -115,19 +115,24 @@ input, select {
 
 <!-- ▼ ホームメニュー -->
 <div id="menu" class="app-card" style="display:block;">
-    <h2>採取量計算ツール</h2>
+  <h2>採取量計算ツール</h2>
 
-    <button class="menu-btn" onclick="openCard('gas')">
-        気体ガス採取量
-    </button>
+  <button class="menu-btn" onclick="openCard('gas')">
+    気体ガス採取量
+  </button>
 
-    <button class="menu-btn" onclick="openCard('liquid')">
-        薬液採取量
-    </button>
+  <button class="menu-btn" onclick="openCard('liquid')">
+    薬液採取量
+  </button>
 
-    <button class="menu-btn" onclick="openCard('ampule')">
-        アンプル希釈量
-    </button>
+  <button class="menu-btn" onclick="openCard('ampule')">
+    アンプル希釈量
+  </button>
+
+  <!-- ▼ カウンター表示枠（ここでOK） -->
+  <div id="counterInfo"
+       style="margin-top:20px; font-size:18px; font-weight:bold;">
+  </div>
 </div>
 
 
@@ -314,6 +319,14 @@ let gasCount = 0;
 let liquidCount = 0;
 let ampCount = 0;
 
+    function updateCounter() {
+    counterInfo.innerHTML =
+        "気体ガス採取量：" + gasCount + " 回<br>" +
+        "薬液採取量：" + liquidCount + " 回<br>" +
+        "アンプル希釈量：" + ampCount + " 回";
+}
+
+
 // ▼ CSV → JSON化したガスデータベース（完全版）
 const gasDB = {
   "OK73シンナー": { short:"OK-73", alias:"C6H1203", mw:99.77, density:0.94, LEL:2.3, LEL40:40, ppm:9200 },
@@ -433,6 +446,8 @@ function calcLiquid() {
     const result = tempFactor * (v * mw * ppm) / (22.4 * 1000 * d);
 
     liquidResult.innerHTML = "採取量：" + result.toFixed(2) + " μL";
+
+     updateCounter();   // ← ここで表示更新
 }
     
 // ▼ 気体ガス採取量計算
@@ -457,6 +472,7 @@ function calcGas() {
     const result = (v * ppm / denom) * 1000;
 
     gasResult.innerHTML = "採取量：" + result.toFixed(2) + " mL";
+     updateCounter();   // ← ここで表示更新
 }
 
 // ▼ 入力値クリア
@@ -483,6 +499,7 @@ ampCount++;
   const result = (cc * 1000) / ppm;
 
   ampResult.innerHTML = "希釈量：" + result.toFixed(2) + " L";
+     updateCounter();   // ← ここで表示更新
 }
 
     // ▼入力値クリア（アンプル）
