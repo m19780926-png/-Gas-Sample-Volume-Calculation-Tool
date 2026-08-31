@@ -325,7 +325,11 @@ let ampCount    = parseInt(localStorage.getItem("ampCount"))    || 0;
         "薬液採取量：" + liquidCount + " 回<br>" +
         "アンプル希釈量：" + ampCount + " 回";
 }
-
+function saveCounter() {
+    localStorage.setItem("gasCount", gasCount);
+    localStorage.setItem("liquidCount", liquidCount);
+    localStorage.setItem("ampCount", ampCount);
+}
 
 // ▼ CSV → JSON化したガスデータベース（完全版）
 const gasDB = {
