@@ -309,6 +309,11 @@ function backMenu(){
     ampule.style.display = "none";
     menu.style.display = "block";
 }
+    // ▼ カウンター（初期値）
+let gasCount = 0;
+let liquidCount = 0;
+let ampCount = 0;
+
 // ▼ CSV → JSON化したガスデータベース（完全版）
 const gasDB = {
   "OK73シンナー": { short:"OK-73", alias:"C6H1203", mw:99.77, density:0.94, LEL:2.3, LEL40:40, ppm:9200 },
@@ -408,6 +413,8 @@ function getPPMValue() {
 
 // ▼ 薬液採取量計算
 function calcLiquid() {
+  liquidCount++;
+
     const t = parseFloat(roomTemp.value);
     const v = parseFloat(gasVolume.value);
     const mw = parseFloat(molWeight.value);
@@ -430,6 +437,8 @@ function calcLiquid() {
     
 // ▼ 気体ガス採取量計算
 function calcGas() {
+    gasCount++;
+
     const v = parseFloat(makeVolume.value);      // 希釈ガス作製量 (L)
     const ppm = parseFloat(makePPM.value);       // 作製濃度 (ppm)
     const cyl = parseFloat(cylinderPPM.value);   // ボンベガス濃度 (ppm)
@@ -460,7 +469,9 @@ function clearGasInputs() {
 
 // ▼ アンプル希釈量計算
 function calcAmpule() {
-  const cc  = parseFloat(amp_cc.value);   // アンプルガス封入量 (cc)
+ampCount++;
+
+    const cc  = parseFloat(amp_cc.value);   // アンプルガス封入量 (cc)
   const ppm = parseFloat(ampPPM.value);   // 作りたいガス濃度 (ppm)
 
   if (isNaN(cc) || isNaN(ppm) || cc <= 0 || ppm <= 0) {
