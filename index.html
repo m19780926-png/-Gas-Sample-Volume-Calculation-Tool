@@ -244,6 +244,18 @@ input, select {
 
     <h2>採取量計算ツール</h2>
 
+ <!-- ▼ 注意書き -->
+    <div class="warning-note">
+        <strong>【注意】</strong><br>
+        本ツールで算出される値は、採取量を決定する際の<strong>参考値</strong>です。<br>
+        実際の採取量は、対象物質のSDS（安全データシート）等の最新情報を確認し、
+        <strong>職場の基準・手順に従って判断してください。</strong><br>
+        本ツールの計算結果をそのまま採取量の決定値として使用しないでください。
+    </div>
+
+
+
+    
     <button class="menu-btn" onclick="openCard('gas')">
         気体ガス採取量
     </button>
@@ -271,15 +283,7 @@ input, select {
     <div id="counterInfo"
          style="margin-top:20px; font-size:18px; font-weight:bold;">
     </div>
-    <!-- ▼ 注意書き -->
-    <div class="warning-note">
-        <strong>【注意】</strong><br>
-        本ツールで算出される値は、採取量を決定する際の<strong>参考値</strong>です。<br>
-        実際の採取量は、対象物質のSDS（安全データシート）等の最新情報を確認し、
-        <strong>職場の基準・手順に従って判断してください。</strong><br>
-        本ツールの計算結果をそのまま採取量の決定値として使用しないでください。
-    </div>
-
+   
 
     
 </div>
