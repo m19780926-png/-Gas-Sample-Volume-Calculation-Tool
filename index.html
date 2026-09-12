@@ -20,7 +20,7 @@ body {
     margin: 0;
 }
 
-.app-card {
+.app-card {F
     background: #ffffff;
     padding: 22px;
     border-radius: 20px;
@@ -736,22 +736,59 @@ input, select {
 
     </div>
 
-    <!-- 計算 -->
+     <!-- 計算 -->
     <button class="calc-btn" onclick="calcLELConversion()">
         計算
     </button>
 
 
+    <!-- ▼ 計算式 -->
+    <div class="formula-card">
 
-    
-<!-- ▼ 入力値クリア -->
-<button class="back-btn"
-        style="background:#d9534f;"
-        onclick="clearLELConversionInputs()">
+        <div class="formula-title">
+            LEL ⇔ ppm 変換計算式
+        </div>
 
-    入力値クリア
+        <div class="formula-math">
 
-</button>
+            <strong>%LEL → ppm</strong>
+
+            \[
+            \mathrm{ppm}
+            =
+            \mathrm{LEL(vol\%)}
+            \times
+            10000
+            \times
+            \frac{\mathrm{\%LEL}}{100}
+            \]
+
+            <br>
+
+            <strong>ppm → %LEL</strong>
+
+            \[
+            \mathrm{\%LEL}
+            =
+            \frac{\mathrm{ppm}}
+            {\mathrm{LEL(vol\%)} \times 10000}
+            \times
+            100
+            \]
+
+        </div>
+
+    </div>
+
+
+    <!-- ▼ 入力値クリア -->
+    <button class="back-btn"
+            style="background:#d9534f;"
+            onclick="clearLELConversionInputs()">
+
+        入力値クリア
+
+    </button>
 
 
 
