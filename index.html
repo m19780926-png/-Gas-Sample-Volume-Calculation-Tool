@@ -2140,6 +2140,36 @@ function showToast(message) {
 }
 
 
+    // ========================================
+// ▼ LEL ⇔ ppm 変換 入力値クリア
+// ========================================
+
+function clearLELConversionInputs(){
+
+    // ガス選択を初期状態に戻す
+    document.getElementById("lelGasSelect").value = "";
+
+    // LEL表示をクリア
+    document.getElementById("selectedLEL").textContent = "－";
+
+    // 入力値をクリア
+    document.getElementById("conversionValue").value = "";
+
+    // 結果をクリア
+    document.getElementById("lelConversionResult").innerHTML = "";
+
+    // 変換方向を初期状態に戻す
+    document.querySelector(
+        'input[name="conversionDirection"][value="lelToPpm"]'
+    ).checked = true;
+
+    // ラベルとプレースホルダーを初期状態に戻す
+    document.getElementById("conversionLabel").textContent = "%LEL";
+
+    document.getElementById("conversionValue").placeholder = "例：40";
+
+}
+
 
 
     
