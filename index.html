@@ -137,7 +137,34 @@ input, select {
 .lel-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 18px;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+.lel-table th,
+.lel-table td {
+    padding: 8px 4px;
+    word-break: break-word;
+}
+
+.lel-table th:nth-child(1),
+.lel-table td:nth-child(1) {
+    width: 30%;
+}
+
+.lel-table th:nth-child(2),
+.lel-table td:nth-child(2) {
+    width: 22%;
+}
+
+.lel-table th:nth-child(3),
+.lel-table td:nth-child(3) {
+    width: 33%;
+}
+
+.lel-table th:nth-child(4),
+.lel-table td:nth-child(4) {
+    width: 15%;
 }
 
 .lel-table th {
