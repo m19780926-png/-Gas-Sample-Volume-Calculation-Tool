@@ -2100,7 +2100,7 @@ function copyToClipboard(text) {
         const numberOnly = match[0];
 
         navigator.clipboard.writeText(numberOnly).then(() => {
-            showToast("数値（" + numberOnly + "）をコピーしました！");
+            showToast("計算結果（" + numberOnly + "）をコピーしました！");
         }).catch(err => {
             console.error("コピー失敗:", err);
         });
