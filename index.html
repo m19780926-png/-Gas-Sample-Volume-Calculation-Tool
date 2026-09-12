@@ -207,7 +207,24 @@ input, select {
     cursor: pointer;
 }
 
+/* コピー完了メッセージ（トースト表示） */
+.copy-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+}
 
+
+    
     
 </style>
 
@@ -1350,6 +1367,8 @@ function calcLiquid(){
     updateCounter();
 
     saveCounter();
+    
+    copyToClipboard(liquidResult.innerHTML); // ← 追加
 
 }
 
@@ -1419,6 +1438,8 @@ function calcGas(){
 
     saveCounter();
 
+    copyToClipboard(gasResult.innerHTML); // ← 追加
+    
 }
 
 
@@ -1485,6 +1506,8 @@ function calcAmpule(){
     updateCounter();
 
     saveCounter();
+
+    copyToClipboard(ampResult.innerHTML); // ← 追加
 
 }
 
@@ -2050,6 +2073,7 @@ function calcLELConversion() {
 
     }
 
+    copyToClipboard(resultArea.innerHTML); // ← 追加
 }
 
 
@@ -2057,7 +2081,48 @@ function calcLELConversion() {
 loadLELConverterData();
 
 
+// クリップボードに数値のみをコピーする関数
+function copyToClipboard(text) {
+    if (!text) return;
+    
+    // エラーメッセージの場合はコピーしない
+    if (text.includes("不正") || text.includes("エラー") || text.includes("0 以下")) {
+        return;
+    }
 
+    // HTMLタグを取り除いたテキストを取得
+    const cleanText = text.replace(/<[^>]*>/g, '');
+
+    // 数値部分（数字、カンマ、小数点）のみを抽出
+    const match = cleanText.match(/[-+]?[0-9,]+(\.[0-9]+)?/);
+
+    if (match) {
+        const numberOnly = match[0];
+
+        navigator.clipboard.writeText(numberOnly).then(() => {
+            showToast("数値（" + numberOnly + "）をコピーしました！");
+        }).catch(err => {
+            console.error("コピー失敗:", err);
+        });
+    }
+}
+
+// ポップアップ通知を表示する関数
+function showToast(message) {
+    let toast = document.getElementById("copyToast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "copyToast";
+        toast.className = "copy-toast";
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.display = "block";
+    
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 2000);
+}
 
 
 
