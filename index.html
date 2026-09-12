@@ -207,6 +207,12 @@ input, select {
         爆発下限界 LEL 一覧
     </button>
 
+<button class="menu-btn" onclick="openCard('lelConverter')">
+    LEL ⇔ ppm 変換
+</button>
+
+
+    
     <!-- ▼ カウンター表示 -->
     <div id="counterInfo"
          style="margin-top:20px; font-size:18px; font-weight:bold;">
@@ -528,6 +534,82 @@ input, select {
 
 </div>
 
+    <!-- LEL ⇔ ppm 変換 -->
+<div id="lelConverter" class="app-card">
+
+    <h2>LEL ⇔ ppm 変換</h2>
+
+    <!-- ガス選択 -->
+    <label for="lelGasSelect">ガス名</label>
+
+    <select id="lelGasSelect" onchange="updateLELValue()">
+        <option value="">ガスを選択してください</option>
+    </select>
+
+    <!-- LEL表示 -->
+    <div style="margin-top:15px;">
+        <strong>爆発下限界（LEL）</strong><br>
+        <span id="selectedLEL">－</span>
+    </div>
+
+    <!-- 変換方向 -->
+    <div style="margin-top:20px;">
+        <strong>変換方向</strong>
+    </div>
+
+    <label style="display:block; margin-top:10px;">
+        <input
+            type="radio"
+            name="conversionDirection"
+            value="lelToPpm"
+            checked
+            onchange="changeConversionDirection()"
+        >
+        LEL → ppm
+    </label>
+
+    <label style="display:block; margin-top:8px;">
+        <input
+            type="radio"
+            name="conversionDirection"
+            value="ppmToLel"
+            onchange="changeConversionDirection()"
+        >
+        ppm → %LEL
+    </label>
+
+    <!-- 入力 -->
+    <div style="margin-top:20px;">
+
+        <label for="conversionValue">
+            <span id="conversionLabel">LELに対する割合（%）</span>
+        </label>
+
+        <input
+            type="number"
+            id="conversionValue"
+            inputmode="decimal"
+            step="any"
+            placeholder="例：40"
+        >
+
+    </div>
+
+    <!-- 計算 -->
+    <button class="calc-btn" onclick="calcLELConversion()">
+        計算
+    </button>
+
+    <!-- 結果 -->
+    <div id="lelConversionResult" class="result">
+    </div>
+
+    <!-- ホーム -->
+    <button class="back-btn" onclick="backMenu()">
+        ← ホームに戻る
+    </button>
+
+</div>
 
 
 <!-- ========================================
