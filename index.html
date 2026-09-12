@@ -152,8 +152,8 @@ input, select {
     border-bottom: 1px solid #e0e0e0;
 }
 
-.lel-table th:nth-child(3),
-.lel-table td:nth-child(3) {
+.lel-table th:nth-child(4),
+.lel-table td:nth-child(4) {
     text-align: center;
     font-weight: bold;
 }
@@ -558,15 +558,12 @@ input, select {
 
             <thead>
 
-                <tr>
-
-                    <th>ガス名</th>
-
-                    <th>化学式</th>
-
-                    <th>LEL<br>(vol%)</th>
-
-                </tr>
+             <tr>
+    <th>ガス名</th>
+    <th>略式/化学式</th>
+    <th>化学式・別名</th>
+    <th>LEL<br>(vol%)</th>
+</tr>
 
             </thead>
 
@@ -1760,16 +1757,17 @@ async function loadLELData(){
             /*
              * HTMLエスケープ
              */
+row.innerHTML = `
 
-            row.innerHTML = `
+    <td>${escapeHTML(gasName)}</td>
 
-                <td>${escapeHTML(gasName)}</td>
+    <td>${escapeHTML(shortFormula)}</td>
 
-                <td>${escapeHTML(formula)}</td>
+    <td>${escapeHTML(aliasFormula)}</td>
 
-                <td>${escapeHTML(lelDisplay)}</td>
+    <td>${escapeHTML(lelDisplay)}</td>
 
-            `;
+`;
 
 
             tableBody.appendChild(row);
@@ -1786,7 +1784,7 @@ async function loadLELData(){
 
             <tr>
 
-                <td colspan="3"
+                <td colspan="4"
                     style="text-align:center;">
 
                     LELデータを読み込めませんでした。
