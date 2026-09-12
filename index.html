@@ -1786,6 +1786,239 @@ function escapeHTML(value){
 updateCounter();
 
 
+
+
+    
+
+// ========================================
+// LEL ⇔ ppm 変換
+// ========================================
+
+let lelConverterData = [];
+
+// LEL.csvを読み込む
+async function loadLELConverterData() {
+
+    try {
+
+        const response = await fetch("./lel.csv");
+
+        if (!response.ok) {
+            throw new Error("LEL.csvの読み込みに失敗しました");
+        }
+
+        const csvText = await response.text();
+
+        const lines = csvText.trim().split(/\r?\n/);
+
+        // 1行目は見出し
+        for (let i = 1; i < lines.length; i++) {
+
+            const columns = parseCSVLine(lines[i]);
+
+            if (columns.length < 4) {
+                continue;
+            }
+
+            const gasName = columns[0].trim();
+            const lel = parseFloat(columns[3]);
+
+            if (!gasName || isNaN(lel)) {
+                continue;
+            }
+
+            lelConverterData.push({
+                name: gasName,
+                lel: lel
+            });
+        }
+
+        // プルダウン作成
+        const select = document.getElementById("lelGasSelect");
+
+        lelConverterData.forEach(gas => {
+
+            const option = document.createElement("option");
+
+            option.value = gas.name;
+            option.textContent = gas.name;
+
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+
+        console.error("LEL変換データ読み込みエラー:", error);
+
+    }
+}
+
+
+// ガスを選択した時にLELを表示
+function updateLELValue() {
+
+    const select = document.getElementById("lelGasSelect");
+
+    const selectedName = select.value;
+
+    const lelDisplay = document.getElementById("selectedLEL");
+
+    if (!selectedName) {
+
+        lelDisplay.textContent = "－";
+
+        return;
+    }
+
+    const gas = lelConverterData.find(
+        item => item.name === selectedName
+    );
+
+    if (!gas) {
+
+        lelDisplay.textContent = "－";
+
+        return;
+    }
+
+    lelDisplay.textContent = gas.lel + " vol%";
+}
+
+
+// 変換方向を変更
+function changeConversionDirection() {
+
+    const direction = document.querySelector(
+        'input[name="conversionDirection"]:checked'
+    ).value;
+
+    const label = document.getElementById("conversionLabel");
+
+    const input = document.getElementById("conversionValue");
+
+    if (direction === "lelToPpm") {
+
+        label.textContent = "LELに対する割合（%）";
+
+        input.placeholder = "例：40";
+
+    } else {
+
+        label.textContent = "ppm";
+
+        input.placeholder = "例：5000";
+
+    }
+
+    // 前の結果を消す
+    document.getElementById(
+        "lelConversionResult"
+    ).textContent = "";
+}
+
+
+// LEL ⇔ ppm 計算
+function calcLELConversion() {
+
+    const select = document.getElementById("lelGasSelect");
+
+    const selectedName = select.value;
+
+    const inputValue = parseFloat(
+        document.getElementById("conversionValue").value
+    );
+
+    const resultArea = document.getElementById(
+        "lelConversionResult"
+    );
+
+    // ガス未選択
+    if (!selectedName) {
+
+        resultArea.textContent =
+            "ガスを選択してください。";
+
+        return;
+    }
+
+    // 数値未入力
+    if (isNaN(inputValue)) {
+
+        resultArea.textContent =
+            "変換する数値を入力してください。";
+
+        return;
+    }
+
+    const gas = lelConverterData.find(
+        item => item.name === selectedName
+    );
+
+    if (!gas) {
+
+        resultArea.textContent =
+            "LELデータが見つかりません。";
+
+        return;
+    }
+
+    const lel = gas.lel;
+
+    const direction = document.querySelector(
+        'input[name="conversionDirection"]:checked'
+    ).value;
+
+
+    // -----------------------------
+    // LEL → ppm
+    // -----------------------------
+    if (direction === "lelToPpm") {
+
+        const ppm = lel * 10000 * (inputValue / 100);
+
+        resultArea.innerHTML =
+            "<strong>結果</strong><br>" +
+            ppm.toLocaleString(undefined, {
+                maximumFractionDigits: 2
+            }) +
+            " ppm";
+
+    }
+
+
+    // -----------------------------
+    // ppm → %LEL
+    // -----------------------------
+    else {
+
+        const ppmAtLEL = lel * 10000;
+
+        const percentLEL =
+            (inputValue / ppmAtLEL) * 100;
+
+        resultArea.innerHTML =
+            "<strong>結果</strong><br>" +
+            percentLEL.toLocaleString(undefined, {
+                maximumFractionDigits: 2
+            }) +
+            " %LEL";
+
+    }
+
+}
+
+
+// ページ読み込み時にLELデータを読み込む
+loadLELConverterData();
+
+
+
+
+
+
+
+    
+
 </script>
 
 
