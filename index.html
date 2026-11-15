@@ -9,22 +9,33 @@
 
 <link rel="manifest" href="manifest.json">
 
-<meta name="theme-color" content="#4CAF50">
+<meta name="theme-color" content="#0a1120">
 
 <style>
 
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    color-scheme: dark;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
-    background: #eef1f5;
+    background: linear-gradient(180deg, #0a1120, #0d1526 60%, #0a1120);
+    background-attachment: fixed;
+    color: #e2e8f0;
     padding: 20px;
     margin: 0;
 }
 
 .app-card {
-    background: #ffffff;
+    background: #0f1a2e;
+    border: 1px solid #263652;
     padding: 22px;
     border-radius: 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45);
     max-width: 600px;
     margin: auto;
     display: none;
@@ -35,12 +46,17 @@ h2 {
     font-weight: bold;
     text-align: center;
     margin-bottom: 24px;
+    background: linear-gradient(90deg, #7dd3fc, #38bdf8 45%, #2dd4bf);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 label {
     font-weight: bold;
     margin-top: 12px;
     display: block;
+    color: #cbd5e1;
 }
 
 input, select {
@@ -48,27 +64,36 @@ input, select {
     padding: 10px;
     margin-top: 6px;
     border-radius: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #334155;
+    background: #0b1526;
+    color: #e8eef7;
     font-size: 18px;
 }
 
 .calc-btn {
     width: 100%;
     padding: 14px;
-    background: #4CAF50;
+    background: linear-gradient(180deg, #10b981, #0d946e);
+    box-shadow: 0 4px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 20px;
+    font-weight: bold;
     margin-top: 20px;
+}
+
+.calc-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
 }
 
 .back-btn {
     width: 100%;
     padding: 14px;
-    background: #777;
-    color: white;
-    border: none;
+    background: #1e293b;
+    color: #cbd5e1;
+    border: 1px solid #475569;
     border-radius: 12px;
     font-size: 18px;
     margin-top: 20px;
@@ -79,13 +104,16 @@ input, select {
     font-size: 22px;
     font-weight: bold;
     text-align: center;
+    color: #7dd3fc;
 }
 
 .formula-card {
-    background: #f9f9f9;
+    background: #132038;
+    border: 1px solid #263652;
     padding: 14px;
     border-radius: 12px;
     margin-top: 20px;
+    overflow: hidden;
 }
 
 .formula-title {
@@ -99,7 +127,7 @@ input, select {
 }
 
 .fraction .top {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #cbd5e1;
     display: block;
 }
 
@@ -110,16 +138,27 @@ input, select {
 .menu-btn {
     width: 100%;
     padding: 18px;
-    background: #2196F3;
+    background: linear-gradient(180deg, #38bdf8, #0284c7);
+    box-shadow: 0 4px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 22px;
+    font-weight: bold;
     margin-top: 20px;
+}
+
+.menu-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
 }
 
 .formula-math {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    padding-bottom: 6px;
+    font-size: 15px;
 }
 
 
@@ -172,13 +211,15 @@ input, select {
     z-index: 10;
     text-align: left;
     padding: 10px 8px;
-    border-bottom: 2px solid #ccc;
-    background: #f5f5f5;
+    border-bottom: 2px solid #334155;
+    background: #1e293b;
+    color: #e2e8f0;
 }
 
 .lel-table td {
     padding: 10px 8px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #263652;
+    color: #cbd5e1;
 }
 
 .lel-table th:nth-child(4),
@@ -191,7 +232,7 @@ input, select {
 .warning-note {
     margin-top: 30px;
     padding: 12px;
-    color: #d32f2f;
+    color: #f87171;
     font-size: 14px;
     line-height: 1.6;
     font-weight: bold;
@@ -212,8 +253,9 @@ input, select {
     justify-content: center;
     gap: 8px;
     padding: 12px 8px;
-    background: #f0f4f8;
-    border: 2px solid #ccc;
+    background: #0b1526;
+    border: 2px solid #334155;
+    color: #cbd5e1;
     border-radius: 10px;
     font-size: 16px;
     font-weight: bold;
@@ -223,9 +265,9 @@ input, select {
 
 /* 選択されている時のスタイル */
 .radio-label:has(input:checked) {
-    background: #e8f5e9;
-    border-color: #4CAF50;
-    color: #2e7d32;
+    background: #064e3b;
+    border-color: #10b981;
+    color: #a7f3d0;
 }
 
 .radio-label input[type="radio"] {
@@ -452,7 +494,7 @@ input, select {
     <!-- ▼ 入力値クリア -->
 
     <button class="back-btn"
-            style="background:#d9534f;"
+            style="background:linear-gradient(180deg,#c24545,#962e2e); border:none; color:#fff;"
             onclick="clearLiquidInputs()">
 
         入力値クリア
@@ -553,7 +595,7 @@ input, select {
 
 
     <button class="back-btn"
-            style="background:#d9534f;"
+            style="background:linear-gradient(180deg,#c24545,#962e2e); border:none; color:#fff;"
             onclick="clearGasInputs()">
 
         入力値クリア
@@ -681,7 +723,7 @@ input, select {
 
 
     <button class="back-btn"
-            style="background:#d9534f;"
+            style="background:linear-gradient(180deg,#c24545,#962e2e); border:none; color:#fff;"
             onclick="clearAmpInputs()">
 
         入力値クリア
@@ -810,7 +852,7 @@ input, select {
 
     <!-- ▼ 入力値クリア -->
     <button class="back-btn"
-            style="background:#d9534f;"
+            style="background:linear-gradient(180deg,#c24545,#962e2e); border:none; color:#fff;"
             onclick="clearLELConversionInputs()">
 
         入力値クリア
