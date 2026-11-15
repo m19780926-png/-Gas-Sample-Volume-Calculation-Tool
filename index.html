@@ -347,14 +347,7 @@ input, select {
 </button>
 
 
-    
-    <!-- ▼ カウンター表示 -->
-    <div id="counterInfo"
-         style="margin-top:20px; font-size:18px; font-weight:bold;">
-    </div>
-   
 
-    
 </div>
 
 
@@ -928,60 +921,6 @@ function backMenu(){
 
 
 /* ========================================
-   ▼ カウンター
-   ======================================== */
-
-let gasCount =
-    parseInt(localStorage.getItem("gasCount")) || 0;
-
-let liquidCount =
-    parseInt(localStorage.getItem("liquidCount")) || 0;
-
-let ampCount =
-    parseInt(localStorage.getItem("ampCount")) || 0;
-
-
-function updateCounter(){
-
-    counterInfo.innerHTML =
-
-        "気体ガス採取量：" +
-        gasCount +
-        " 回<br>" +
-
-        "薬液採取量：" +
-        liquidCount +
-        " 回<br>" +
-
-        "アンプル希釈量：" +
-        ampCount +
-        " 回";
-
-}
-
-
-function saveCounter(){
-
-    localStorage.setItem(
-        "gasCount",
-        gasCount
-    );
-
-    localStorage.setItem(
-        "liquidCount",
-        liquidCount
-    );
-
-    localStorage.setItem(
-        "ampCount",
-        ampCount
-    );
-
-}
-
-
-
-/* ========================================
    ▼ CSV → JSON化したガスデータベース
    ======================================== */
 
@@ -1494,12 +1433,6 @@ function calcLiquid(){
         " μL";
 
 
-    liquidCount++;
-
-    updateCounter();
-
-    saveCounter();
-
     if (window.countUsage) window.countUsage("liquid");
     
     
@@ -1566,12 +1499,6 @@ function calcGas(){
         " mL";
 
 
-    gasCount++;
-
-    updateCounter();
-
-    saveCounter();
-
     if (window.countUsage) window.countUsage("gas");
 
    
@@ -1636,12 +1563,6 @@ function calcAmpule(){
         result.toFixed(2) +
         " L";
 
-
-    ampCount++;
-
-    updateCounter();
-
-    saveCounter();
 
     if (window.countUsage) window.countUsage("ampule");
 
@@ -1986,16 +1907,7 @@ function escapeHTML(value){
 
 
 
-/* ========================================
-   ▼ カウンター初期表示
-   ======================================== */
 
-updateCounter();
-
-
-
-
-    
 
 // ========================================
 // LEL ⇔ ppm 変換
