@@ -1375,6 +1375,13 @@ function getPPMValue(){
         gasDB[key];
 
 
+    if (!g) {
+
+        return NaN;
+
+    }
+
+
     return g.ppm * (val / 40);
 
 }
@@ -1386,8 +1393,6 @@ function getPPMValue(){
    ======================================== */
 
 function calcLiquid(){
-
-    liquidCount++;
 
 
     const t =
@@ -1416,11 +1421,15 @@ function calcLiquid(){
         v <= 0 ||
         mw <= 0 ||
         ppm <= 0 ||
-        d <= 0
+        d <= 0 ||
+        t <= -273 ||
+        t > 60
     ){
 
         liquidResult.innerHTML =
-            "入力値が不正です。";
+            isNaN(ppm)
+                ? "ガスが選択されていないか、濃度の入力が不正です。（%LEL指定時はガス選択が必要です）"
+                : "入力値が不正です。";
 
         return;
 
@@ -1443,6 +1452,8 @@ function calcLiquid(){
         " μL";
 
 
+    liquidCount++;
+
     updateCounter();
 
     saveCounter();
@@ -1458,8 +1469,6 @@ function calcLiquid(){
    ======================================== */
 
 function calcGas(){
-
-    gasCount++;
 
 
     const v =
@@ -1513,6 +1522,8 @@ function calcGas(){
         " mL";
 
 
+    gasCount++;
+
     updateCounter();
 
     saveCounter();
@@ -1547,8 +1558,6 @@ function clearGasInputs(){
 
 function calcAmpule(){
 
-    ampCount++;
-
 
     const cc =
         parseFloat(amp_cc.value);
@@ -1581,6 +1590,8 @@ function calcAmpule(){
         result.toFixed(2) +
         " L";
 
+
+    ampCount++;
 
     updateCounter();
 
