@@ -1499,6 +1499,8 @@ function calcLiquid(){
     updateCounter();
 
     saveCounter();
+
+    if (window.countUsage) window.countUsage("liquid");
     
     
 
@@ -1570,6 +1572,8 @@ function calcGas(){
 
     saveCounter();
 
+    if (window.countUsage) window.countUsage("gas");
+
    
     
 }
@@ -1638,6 +1642,8 @@ function calcAmpule(){
     updateCounter();
 
     saveCounter();
+
+    if (window.countUsage) window.countUsage("ampule");
 
    
 
@@ -2321,6 +2327,39 @@ if ("serviceWorker" in navigator) {
 
 }
 
+</script>
+
+<script type="module">
+// 使用回数カウンター（Firebase Firestore: usage_gas_種類/日付 の count を +1）
+const firebaseConfig = {
+  apiKey: "AIzaSyAVDEdATO1-C22J6JIZhkKxoil8_52jNc0",
+  authDomain: "kosei-gas-counter.firebaseapp.com",
+  projectId: "kosei-gas-counter",
+  storageBucket: "kosei-gas-counter.firebasestorage.app",
+  messagingSenderId: "426646318082",
+  appId: "1:426646318082:web:142ee95d3cbf5b1fd34b1b"
+};
+let dbPromise = null;
+function getDb() {
+  if (!dbPromise) {
+    dbPromise = Promise.all([
+      import("https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js")
+    ]).then(([appMod, fsMod]) => {
+      const app = appMod.initializeApp(firebaseConfig);
+      return { db: fsMod.getFirestore(app), fs: fsMod };
+    });
+  }
+  return dbPromise;
+}
+window.countUsage = function (kind) {
+  getDb().then(({ db, fs }) => {
+    const now = new Date();
+    const pad = (n) => (n < 10 ? "0" : "") + n;
+    const key = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+    return fs.setDoc(fs.doc(db, "usage_gas_" + kind, key), { count: fs.increment(1) }, { merge: true });
+  }).catch(() => {});
+};
 </script>
 
 
