@@ -2124,6 +2124,8 @@ function calcLELConversion() {
 
     }
 
+    if (window.countUsage) window.countUsage("lel");
+
     copyToClipboard(resultArea.innerHTML); // ← 追加
 }
 
