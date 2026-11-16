@@ -580,7 +580,21 @@ input, select {
 
 
     <label>
-        ボンベガス濃度 (ppm)
+        ボンベガス濃度の単位
+    </label>
+
+    <select id="cylinderUnitSelect"
+            onchange="changeCylinderUnit()">
+
+        <option value="ppm">ppm</option>
+
+        <option value="vol">vol%</option>
+
+    </select>
+
+
+    <label>
+        ボンベガス濃度 <span id="cylinderUnitLabel">(ppm)</span>
     </label>
 
     <input type="number"
@@ -1496,6 +1510,18 @@ function changeMakeUnit(){
 }
 
 
+// ボンベガス濃度の単位切替（ppm / vol%）
+function changeCylinderUnit(){
+
+    const isVol =
+        document.getElementById("cylinderUnitSelect").value === "vol";
+
+    document.getElementById("cylinderUnitLabel").textContent =
+        isVol ? "(vol%)" : "(ppm)";
+
+}
+
+
 function calcGas(){
 
 
@@ -1505,17 +1531,17 @@ function calcGas(){
     const ppmRaw =
         parseFloat(makePPM.value);
 
-    const cyl =
+    const cylRaw =
         parseFloat(cylinderPPM.value);
 
 
     if (
         isNaN(v) ||
         isNaN(ppmRaw) ||
-        isNaN(cyl) ||
+        isNaN(cylRaw) ||
         v <= 0 ||
         ppmRaw <= 0 ||
-        cyl <= 0
+        cylRaw <= 0
     ){
 
         gasResult.innerHTML =
@@ -1563,6 +1589,29 @@ function calcGas(){
     }
 
 
+    // ボンベガス濃度がvol%の時はppmへ換算（ppm ＝ vol% × 10000）
+    let cyl =
+        cylRaw;
+
+    let cylNote =
+        "";
+
+
+    if (
+        document.getElementById("cylinderUnitSelect").value === "vol"
+    ){
+
+        cyl =
+            cylRaw * 10000;
+
+        cylNote =
+            "<br>（ボンベガス濃度：" +
+            cyl.toLocaleString() +
+            " ppm で計算）";
+
+    }
+
+
     const denom =
         cyl - ppm;
 
@@ -1585,7 +1634,8 @@ function calcGas(){
         "採取量：" +
         result.toFixed(2) +
         " mL" +
-        ppmNote;
+        ppmNote +
+        cylNote;
 
 
     if (window.countUsage) window.countUsage("gas");
@@ -1613,6 +1663,10 @@ function clearGasInputs(){
     document.getElementById("makeGasSelect").value = "";
 
     changeMakeUnit();
+
+    document.getElementById("cylinderUnitSelect").value = "ppm";
+
+    changeCylinderUnit();
 
     gasResult.innerHTML = "";
 
