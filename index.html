@@ -535,20 +535,11 @@ input, select {
 
 
     <label>
-        作製濃度 (ppm)
+        作製濃度の単位
     </label>
 
-    <input type="number"
-           id="makePPM"
-           step="0.01">
-
-
-    <label>
-        ボンベガス濃度の単位
-    </label>
-
-    <select id="cylinderUnitSelect"
-            onchange="changeCylinderUnit()">
+    <select id="makeUnitSelect"
+            onchange="changeMakeUnit()">
 
         <option value="ppm">ppm</option>
 
@@ -557,14 +548,14 @@ input, select {
     </select>
 
 
-    <div id="cylinderGasArea"
+    <div id="makeGasArea"
          style="display:none">
 
         <label>
             ガス名（%LEL用）
         </label>
 
-        <select id="cylinderGasSelect">
+        <select id="makeGasSelect">
 
             <option value="">選択してください</option>
 
@@ -580,7 +571,16 @@ input, select {
 
 
     <label>
-        ボンベガス濃度 <span id="cylinderUnitLabel">(ppm)</span>
+        作製濃度 <span id="makeUnitLabel">(ppm)</span>
+    </label>
+
+    <input type="number"
+           id="makePPM"
+           step="0.01">
+
+
+    <label>
+        ボンベガス濃度 (ppm)
     </label>
 
     <input type="number"
@@ -1481,16 +1481,16 @@ function calcLiquid(){
    ▼ 気体ガス採取量計算
    ======================================== */
 
-// ボンベガス濃度の単位切替（%LELの時だけガス名を表示）
-function changeCylinderUnit(){
+// 作製濃度の単位切替（%LELの時だけガス名を表示）
+function changeMakeUnit(){
 
     const isLEL =
-        document.getElementById("cylinderUnitSelect").value === "lel";
+        document.getElementById("makeUnitSelect").value === "lel";
 
-    document.getElementById("cylinderGasArea").style.display =
+    document.getElementById("makeGasArea").style.display =
         isLEL ? "" : "none";
 
-    document.getElementById("cylinderUnitLabel").textContent =
+    document.getElementById("makeUnitLabel").textContent =
         isLEL ? "(%LEL)" : "(ppm)";
 
 }
@@ -1502,20 +1502,20 @@ function calcGas(){
     const v =
         parseFloat(makeVolume.value);
 
-    const ppm =
+    const ppmRaw =
         parseFloat(makePPM.value);
 
-    const cylRaw =
+    const cyl =
         parseFloat(cylinderPPM.value);
 
 
     if (
         isNaN(v) ||
-        isNaN(ppm) ||
-        isNaN(cylRaw) ||
+        isNaN(ppmRaw) ||
+        isNaN(cyl) ||
         v <= 0 ||
-        ppm <= 0 ||
-        cylRaw <= 0
+        ppmRaw <= 0 ||
+        cyl <= 0
     ){
 
         gasResult.innerHTML =
@@ -1526,21 +1526,21 @@ function calcGas(){
     }
 
 
-    // %LELの時はppmへ換算（ppm ＝ %LEL × LEL(vol%) × 100）
-    let cyl =
-        cylRaw;
+    // 作製濃度が%LELの時はppmへ換算（ppm ＝ %LEL × LEL(vol%) × 100）
+    let ppm =
+        ppmRaw;
 
-    let cylNote =
+    let ppmNote =
         "";
 
 
     if (
-        document.getElementById("cylinderUnitSelect").value === "lel"
+        document.getElementById("makeUnitSelect").value === "lel"
     ){
 
         const lelVol =
             parseFloat(
-                document.getElementById("cylinderGasSelect").value
+                document.getElementById("makeGasSelect").value
             );
 
         if (isNaN(lelVol)){
@@ -1552,12 +1552,12 @@ function calcGas(){
 
         }
 
-        cyl =
-            cylRaw * lelVol * 100;
+        ppm =
+            ppmRaw * lelVol * 100;
 
-        cylNote =
-            "<br>（ボンベガス濃度：" +
-            cyl.toLocaleString() +
+        ppmNote =
+            "<br>（作製濃度：" +
+            ppm.toLocaleString() +
             " ppm で計算）";
 
     }
@@ -1585,7 +1585,7 @@ function calcGas(){
         "採取量：" +
         result.toFixed(2) +
         " mL" +
-        cylNote;
+        ppmNote;
 
 
     if (window.countUsage) window.countUsage("gas");
@@ -1608,11 +1608,11 @@ function clearGasInputs(){
 
     cylinderPPM.value = "";
 
-    document.getElementById("cylinderUnitSelect").value = "ppm";
+    document.getElementById("makeUnitSelect").value = "ppm";
 
-    document.getElementById("cylinderGasSelect").value = "";
+    document.getElementById("makeGasSelect").value = "";
 
-    changeCylinderUnit();
+    changeMakeUnit();
 
     gasResult.innerHTML = "";
 
