@@ -544,7 +544,43 @@ input, select {
 
 
     <label>
-        ボンベガス濃度 (ppm)
+        ボンベガス濃度の単位
+    </label>
+
+    <select id="cylinderUnitSelect"
+            onchange="changeCylinderUnit()">
+
+        <option value="ppm">ppm</option>
+
+        <option value="lel">%LEL</option>
+
+    </select>
+
+
+    <div id="cylinderGasArea"
+         style="display:none">
+
+        <label>
+            ガス名（%LEL用）
+        </label>
+
+        <select id="cylinderGasSelect">
+
+            <option value="">選択してください</option>
+
+            <option value="4.0">水素（H2 / LEL 4.0 vol%）</option>
+
+            <option value="5.0">メタン（CH4 / LEL 5.0 vol%）</option>
+
+            <option value="1.8">イソブタン（i-C4H10 / LEL 1.8 vol%）</option>
+
+        </select>
+
+    </div>
+
+
+    <label>
+        ボンベガス濃度 <span id="cylinderUnitLabel">(ppm)</span>
     </label>
 
     <input type="number"
@@ -1445,6 +1481,21 @@ function calcLiquid(){
    ▼ 気体ガス採取量計算
    ======================================== */
 
+// ボンベガス濃度の単位切替（%LELの時だけガス名を表示）
+function changeCylinderUnit(){
+
+    const isLEL =
+        document.getElementById("cylinderUnitSelect").value === "lel";
+
+    document.getElementById("cylinderGasArea").style.display =
+        isLEL ? "" : "none";
+
+    document.getElementById("cylinderUnitLabel").textContent =
+        isLEL ? "(%LEL)" : "(ppm)";
+
+}
+
+
 function calcGas(){
 
 
@@ -1454,23 +1505,60 @@ function calcGas(){
     const ppm =
         parseFloat(makePPM.value);
 
-    const cyl =
+    const cylRaw =
         parseFloat(cylinderPPM.value);
 
 
     if (
         isNaN(v) ||
         isNaN(ppm) ||
-        isNaN(cyl) ||
+        isNaN(cylRaw) ||
         v <= 0 ||
         ppm <= 0 ||
-        cyl <= 0
+        cylRaw <= 0
     ){
 
         gasResult.innerHTML =
             "入力値が不正です。";
 
         return;
+
+    }
+
+
+    // %LELの時はppmへ換算（ppm ＝ %LEL × LEL(vol%) × 100）
+    let cyl =
+        cylRaw;
+
+    let cylNote =
+        "";
+
+
+    if (
+        document.getElementById("cylinderUnitSelect").value === "lel"
+    ){
+
+        const lelVol =
+            parseFloat(
+                document.getElementById("cylinderGasSelect").value
+            );
+
+        if (isNaN(lelVol)){
+
+            gasResult.innerHTML =
+                "ガスを選択してください。";
+
+            return;
+
+        }
+
+        cyl =
+            cylRaw * lelVol * 100;
+
+        cylNote =
+            "<br>（ボンベガス濃度：" +
+            cyl.toLocaleString() +
+            " ppm で計算）";
 
     }
 
@@ -1496,7 +1584,8 @@ function calcGas(){
     gasResult.innerHTML =
         "採取量：" +
         result.toFixed(2) +
-        " mL";
+        " mL" +
+        cylNote;
 
 
     if (window.countUsage) window.countUsage("gas");
@@ -1518,6 +1607,12 @@ function clearGasInputs(){
     makePPM.value = "";
 
     cylinderPPM.value = "";
+
+    document.getElementById("cylinderUnitSelect").value = "ppm";
+
+    document.getElementById("cylinderGasSelect").value = "";
+
+    changeCylinderUnit();
 
     gasResult.innerHTML = "";
 
