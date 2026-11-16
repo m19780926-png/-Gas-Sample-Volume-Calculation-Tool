@@ -1948,19 +1948,27 @@ async function loadLELConverterData() {
 
             lelConverterData.push({
                 name: gasName,
+                short: (columns[1] || "").trim(),
+                alias: (columns[2] || "").trim(),
                 lel: lel
             });
         }
 
-        // プルダウン作成
+        // プルダウン作成（薬液採取量と同じく「ガス名（略式 / 化学式・別名）」表記）
         const select = document.getElementById("lelGasSelect");
 
         lelConverterData.forEach(gas => {
 
             const option = document.createElement("option");
 
+            const parts = [gas.short, gas.alias].filter(
+                v => v && v !== "N/A"
+            );
+
             option.value = gas.name;
-            option.textContent = gas.name;
+            option.textContent = parts.length
+                ? gas.name + "（" + parts.join(" / ") + "）"
+                : gas.name;
 
             select.appendChild(option);
         });
