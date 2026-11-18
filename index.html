@@ -926,8 +926,35 @@ input, select {
 
     <h2>4-20mA 換算</h2>
 
-    <!-- 現在の電流値 -->
-    <label for="ma420Current">現在の電流値（mA）</label>
+    <!-- 変換方向 -->
+    <div style="margin-top:20px;">
+        <strong>変換方向</strong>
+    </div>
+
+    <div class="radio-group">
+        <label class="radio-label">
+            <input
+                type="radio"
+                name="ma420Direction"
+                value="maToConc"
+                checked
+                onchange="changeMa420Direction()"
+            >
+            電流 → 濃度
+        </label>
+        <label class="radio-label">
+            <input
+                type="radio"
+                name="ma420Direction"
+                value="concToMa"
+                onchange="changeMa420Direction()"
+            >
+            濃度 → 電流
+        </label>
+    </div>
+
+    <!-- 第1入力（方向で切替） -->
+    <label for="ma420Current"><span id="ma420FirstLabel">現在の電流値（mA）</span></label>
 
     <input
         type="number"
@@ -985,7 +1012,11 @@ input, select {
         </div>
 
         <div class="formula-math">
+            <strong>電流 → 濃度</strong><br>
             ガス濃度 ＝（電流値 − 4）÷ 16 × フルスケール濃度
+            <br><br>
+            <strong>濃度 → 電流</strong><br>
+            電流値 ＝ 濃度 ÷ フルスケール濃度 × 16 ＋ 4
         </div>
 
     </div>
@@ -2385,9 +2416,38 @@ function calcLELConversion() {
 // ▼ 4-20mA 換算
 // ========================================
 
+function changeMa420Direction() {
+
+    const dir = document.querySelector(
+        'input[name="ma420Direction"]:checked'
+    ).value;
+
+    const label = document.getElementById("ma420FirstLabel");
+
+    const input = document.getElementById("ma420Current");
+
+    if (dir === "concToMa") {
+
+        label.textContent = "現在のガス濃度";
+
+        input.placeholder = "例：50";
+
+    } else {
+
+        label.textContent = "現在の電流値（mA）";
+
+        input.placeholder = "例：12.0";
+    }
+
+    document.getElementById("ma420Result").textContent = "";
+
+    document.getElementById("ma420Gauge").style.display = "none";
+}
+
+
 function calcMa420() {
 
-    const current = parseFloat(
+    const value = parseFloat(
         document.getElementById("ma420Current").value
     );
 
@@ -2397,62 +2457,118 @@ function calcMa420() {
 
     const unit = document.getElementById("ma420Unit").value;
 
+    const dir = document.querySelector(
+        'input[name="ma420Direction"]:checked'
+    ).value;
+
     const resultArea = document.getElementById("ma420Result");
 
     const gauge = document.getElementById("ma420Gauge");
 
-    // 電流値 未入力
-    if (isNaN(current)) {
+    function showError(msg) {
 
-        resultArea.textContent =
-            "現在の電流値を入力してください。";
+        resultArea.textContent = msg;
 
         gauge.style.display = "none";
-
-        return;
     }
 
-    // 電流値 範囲外
-    if (current < 4 || current > 20) {
+    let ratio;
 
-        resultArea.textContent =
-            "電流値は 4〜20mA の範囲で入力してください。";
+    if (dir === "maToConc") {
 
-        gauge.style.display = "none";
+        // 電流 → 濃度
+        if (isNaN(value)) {
 
-        return;
-    }
+            showError("現在の電流値を入力してください。");
 
-    // フルスケール 未入力・0以下
-    if (isNaN(fs) || fs <= 0) {
+            return;
+        }
 
-        resultArea.textContent =
-            "フルスケール濃度を入力してください。";
+        if (value < 4 || value > 20) {
 
-        gauge.style.display = "none";
+            showError("電流値は 4〜20mA の範囲で入力してください。");
 
-        return;
-    }
+            return;
+        }
 
-    const ratio = (current - 4) / 16;
+        if (isNaN(fs) || fs <= 0) {
 
-    const conc = ratio * fs;
+            showError("フルスケール濃度を入力してください。");
 
-    resultArea.innerHTML =
-        "<strong>現在のガス濃度</strong><br>" +
-        conc.toLocaleString(undefined, {
+            return;
+        }
+
+        ratio = (value - 4) / 16;
+
+        const conc = ratio * fs;
+
+        resultArea.innerHTML =
+            "<strong>現在のガス濃度</strong><br>" +
+            conc.toLocaleString(undefined, {
+                maximumFractionDigits: 2
+            }) +
+            " " + unit +
+            "<br><span style=\"font-size:15px; color:#94a3b8;\">" +
+            "計算式：（" + value + " − 4）÷ 16 × " + fs +
+            "</span>";
+
+        document.getElementById("ma420Pct").textContent =
+            value + "mA（" + (ratio * 100).toFixed(1) + "%）";
+
+    } else {
+
+        // 濃度 → 電流
+        if (isNaN(value)) {
+
+            showError("現在のガス濃度を入力してください。");
+
+            return;
+        }
+
+        if (value < 0) {
+
+            showError("濃度は 0 以上で入力してください。");
+
+            return;
+        }
+
+        if (isNaN(fs) || fs <= 0) {
+
+            showError("フルスケール濃度を入力してください。");
+
+            return;
+        }
+
+        if (value > fs) {
+
+            showError("濃度はフルスケール以下で入力してください。");
+
+            return;
+        }
+
+        ratio = value / fs;
+
+        const ma = ratio * 16 + 4;
+
+        const maText = ma.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
             maximumFractionDigits: 2
-        }) +
-        " " + unit +
-        "<br><span style=\"font-size:15px; color:#94a3b8;\">" +
-        "計算式：（" + current + " − 4）÷ 16 × " + fs +
-        "</span>";
+        });
+
+        resultArea.innerHTML =
+            "<strong>現在の電流値</strong><br>" +
+            maText +
+            " mA" +
+            "<br><span style=\"font-size:15px; color:#94a3b8;\">" +
+            "計算式：" + value + " ÷ " + fs + " × 16 ＋ 4" +
+            "</span>";
+
+        document.getElementById("ma420Pct").textContent =
+            maText + "mA（" + (ratio * 100).toFixed(1) + "%）";
+    }
 
     document.getElementById("ma420Bar").style.width =
         (ratio * 100) + "%";
-
-    document.getElementById("ma420Pct").textContent =
-        current + "mA（" + (ratio * 100).toFixed(1) + "%）";
 
     gauge.style.display = "block";
 
