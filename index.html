@@ -153,6 +153,41 @@ input, select {
     box-shadow: 0 1px 3px rgba(0,0,0,.4);
 }
 
+/* ▼ タブ切替 */
+#tabHeader {
+    max-width: 600px;
+    margin: auto;
+}
+
+#tabHeader .warning-note {
+    margin-top: 10px;
+}
+
+.tab-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 16px 0 20px;
+}
+
+.tab-btn {
+    padding: 12px 2px;
+    background: #16233c;
+    color: #94a3b8;
+    border: 1px solid #263652;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: #0e3c5c;
+    color: #38bdf8;
+    border-color: #38bdf8;
+}
+
 .formula-math {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -306,10 +341,10 @@ input, select {
 
 
 <!-- ========================================
-     ▼ ホームメニュー
+     ▼ ヘッダー（タイトル＋注意書き＋タブ）
      ======================================== -->
 
-<div id="menu" class="app-card" style="display:block;">
+<div id="tabHeader">
 
     <h2>採取量計算ツール</h2>
 
@@ -322,35 +357,14 @@ input, select {
         本ツールの計算結果をそのまま採取量の決定値として使用しないでください。
     </div>
 
-
-
-    
-    <button class="menu-btn" onclick="openCard('gas')">
-        気体ガス採取量
-    </button>
-
-    <button class="menu-btn" onclick="openCard('liquid')">
-        薬液採取量
-    </button>
-
-    <button class="menu-btn" onclick="openCard('ampule')">
-        アンプル希釈量
-    </button>
-
-    <!-- ▼ 爆発下限界 LEL 一覧 -->
-    <button class="menu-btn" onclick="openCard('lel')">
-        爆発下限界一覧
-    </button>
-
-<button class="menu-btn" onclick="openCard('lelConverter')">
-    LEL ⇔ ppm 変換
-</button>
-
-<button class="menu-btn" onclick="openCard('ma420')">
-    4-20mA 換算
-</button>
-
-
+    <div class="tab-bar">
+        <button class="tab-btn active" data-card="gas" onclick="openCard('gas')">気体ガス採取量</button>
+        <button class="tab-btn" data-card="liquid" onclick="openCard('liquid')">薬液採取量</button>
+        <button class="tab-btn" data-card="ampule" onclick="openCard('ampule')">アンプル希釈量</button>
+        <button class="tab-btn" data-card="lel" onclick="openCard('lel')">爆発下限界一覧</button>
+        <button class="tab-btn" data-card="lelConverter" onclick="openCard('lelConverter')">LEL ⇔ ppm 変換</button>
+        <button class="tab-btn" data-card="ma420" onclick="openCard('ma420')">4-20mA 換算</button>
+    </div>
 
 </div>
 
@@ -509,12 +523,6 @@ input, select {
 
 
 
-    <button class="back-btn"
-            onclick="backMenu()">
-
-        ← ホームに戻る
-
-    </button>
 
 </div>
 
@@ -524,7 +532,7 @@ input, select {
      ▼ 気体ガス採取量
      ======================================== -->
 
-<div id="gas" class="app-card">
+<div id="gas" class="app-card" style="display:block;">
 
     <h2>気体ガス採取量計算</h2>
 
@@ -650,12 +658,6 @@ input, select {
     </button>
 
 
-    <button class="back-btn"
-            onclick="backMenu()">
-
-        ← ホームに戻る
-
-    </button>
 
 </div>
 
@@ -695,12 +697,6 @@ input, select {
     </div>
 
 
-    <button class="back-btn"
-            onclick="backMenu()">
-
-        ← ホームに戻る
-
-    </button>
 
 </div>
 
@@ -778,12 +774,6 @@ input, select {
     </button>
 
 
-    <button class="back-btn"
-            onclick="backMenu()">
-
-        ← ホームに戻る
-
-    </button>
 
 </div>
 <!-- LEL ⇔ ppm 変換 -->
@@ -913,10 +903,6 @@ input, select {
     <div id="lelConversionResult" class="result">
     </div>
 
-    <!-- ホーム -->
-    <button class="back-btn" onclick="backMenu()">
-        ← ホームに戻る
-    </button>
 
 </div>
 
@@ -1030,10 +1016,6 @@ input, select {
 
     </button>
 
-    <!-- ホーム -->
-    <button class="back-btn" onclick="backMenu()">
-        ← ホームに戻る
-    </button>
 
 </div>
 
@@ -1047,8 +1029,6 @@ input, select {
 
 function openCard(id){
 
-    menu.style.display = "none";
-
     gas.style.display = "none";
 
     liquid.style.display = "none";
@@ -1057,13 +1037,19 @@ function openCard(id){
 
     lel.style.display = "none";
 
-    lelConverter.style.display = "none"; // ← この行を追加！　
+    lelConverter.style.display = "none";
 
     ma420.style.display = "none";
 
     document.getElementById(id).style.display = "block";
 
-　　window.scrollTo(0, 0);
+    document.querySelectorAll(".tab-btn").forEach(function (btn) {
+
+        btn.classList.toggle("active", btn.dataset.card === id);
+
+    });
+
+    window.scrollTo(0, 0);
     // LEL一覧を開いたときにCSVを読み込む
 
     if (id === "lel") {
@@ -1071,25 +1057,6 @@ function openCard(id){
         loadLELData();
 
     }
-
-}
-
-
-function backMenu(){
-
-    gas.style.display = "none";
-
-    liquid.style.display = "none";
-
-    ampule.style.display = "none";
-
-    lel.style.display = "none";
-
-    lelConverter.style.display = "none"; // ← この行を追加！
-
-    ma420.style.display = "none";
-
-    menu.style.display = "block";
 
 }
 
