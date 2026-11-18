@@ -346,6 +346,10 @@ input, select {
     LEL ⇔ ppm 変換
 </button>
 
+<button class="menu-btn" onclick="openCard('ma420')">
+    4-20mA 換算
+</button>
+
 
 
 </div>
@@ -917,6 +921,92 @@ input, select {
 </div>
 
 
+<!-- 4-20mA 換算 -->
+<div id="ma420" class="app-card">
+
+    <h2>4-20mA 換算</h2>
+
+    <!-- 現在の電流値 -->
+    <label for="ma420Current">現在の電流値（mA）</label>
+
+    <input
+        type="number"
+        id="ma420Current"
+        inputmode="decimal"
+        step="any"
+        placeholder="例：12.0"
+    >
+
+    <!-- フルスケール濃度 -->
+    <label for="ma420Fs">フルスケール（FS）濃度</label>
+
+    <input
+        type="number"
+        id="ma420Fs"
+        inputmode="decimal"
+        step="any"
+        placeholder="例：100"
+    >
+
+    <!-- 単位 -->
+    <label for="ma420Unit">単位</label>
+
+    <select id="ma420Unit">
+        <option value="ppm">ppm</option>
+        <option value="vol%">vol%</option>
+        <option value="%LEL">%LEL</option>
+    </select>
+
+    <!-- 計算 -->
+    <button class="calc-btn" onclick="calcMa420()">
+        計算
+    </button>
+
+    <!-- 結果 -->
+    <div id="ma420Result" class="result">
+    </div>
+
+    <!-- 電流の位置ゲージ -->
+    <div id="ma420Gauge" style="display:none; margin-top:20px;">
+        <div style="font-size:14px; color:#94a3b8; margin-bottom:6px;">
+            電流の位置（4mA=0% 〜 20mA=100%）
+        </div>
+        <div style="height:16px; background:#0b1526; border:1px solid #334155; border-radius:8px; overflow:hidden;">
+            <div id="ma420Bar" style="height:100%; width:0%; background:#0e7490;"></div>
+        </div>
+        <div id="ma420Pct" style="text-align:center; color:#38bdf8; font-weight:bold; margin-top:6px;"></div>
+    </div>
+
+    <!-- ▼ 計算式 -->
+    <div class="formula-card">
+
+        <div class="formula-title">
+            4-20mA 換算計算式
+        </div>
+
+        <div class="formula-math">
+            ガス濃度 ＝（電流値 − 4）÷ 16 × フルスケール濃度
+        </div>
+
+    </div>
+
+    <!-- ▼ 入力値クリア -->
+    <button class="back-btn"
+            style="background:linear-gradient(180deg,#c24545,#962e2e); border:none; color:#fff;"
+            onclick="clearMa420Inputs()">
+
+        入力値クリア
+
+    </button>
+
+    <!-- ホーム -->
+    <button class="back-btn" onclick="backMenu()">
+        ← ホームに戻る
+    </button>
+
+</div>
+
+
 <script>
 
 
@@ -937,6 +1027,8 @@ function openCard(id){
     lel.style.display = "none";
 
     lelConverter.style.display = "none"; // ← この行を追加！　
+
+    ma420.style.display = "none";
 
     document.getElementById(id).style.display = "block";
 
@@ -963,6 +1055,8 @@ function backMenu(){
     lel.style.display = "none";
 
     lelConverter.style.display = "none"; // ← この行を追加！
+
+    ma420.style.display = "none";
 
     menu.style.display = "block";
 
@@ -2284,6 +2378,99 @@ function calcLELConversion() {
     if (window.countUsage) window.countUsage("lel");
 
     copyToClipboard(resultArea.innerHTML); // ← 追加
+}
+
+
+// ========================================
+// ▼ 4-20mA 換算
+// ========================================
+
+function calcMa420() {
+
+    const current = parseFloat(
+        document.getElementById("ma420Current").value
+    );
+
+    const fs = parseFloat(
+        document.getElementById("ma420Fs").value
+    );
+
+    const unit = document.getElementById("ma420Unit").value;
+
+    const resultArea = document.getElementById("ma420Result");
+
+    const gauge = document.getElementById("ma420Gauge");
+
+    // 電流値 未入力
+    if (isNaN(current)) {
+
+        resultArea.textContent =
+            "現在の電流値を入力してください。";
+
+        gauge.style.display = "none";
+
+        return;
+    }
+
+    // 電流値 範囲外
+    if (current < 4 || current > 20) {
+
+        resultArea.textContent =
+            "電流値は 4〜20mA の範囲で入力してください。";
+
+        gauge.style.display = "none";
+
+        return;
+    }
+
+    // フルスケール 未入力・0以下
+    if (isNaN(fs) || fs <= 0) {
+
+        resultArea.textContent =
+            "フルスケール濃度を入力してください。";
+
+        gauge.style.display = "none";
+
+        return;
+    }
+
+    const ratio = (current - 4) / 16;
+
+    const conc = ratio * fs;
+
+    resultArea.innerHTML =
+        "<strong>現在のガス濃度</strong><br>" +
+        conc.toLocaleString(undefined, {
+            maximumFractionDigits: 2
+        }) +
+        " " + unit +
+        "<br><span style=\"font-size:15px; color:#94a3b8;\">" +
+        "計算式：（" + current + " − 4）÷ 16 × " + fs +
+        "</span>";
+
+    document.getElementById("ma420Bar").style.width =
+        (ratio * 100) + "%";
+
+    document.getElementById("ma420Pct").textContent =
+        current + "mA（" + (ratio * 100).toFixed(1) + "%）";
+
+    gauge.style.display = "block";
+
+    if (window.countUsage) window.countUsage("ma420");
+
+    copyToClipboard(resultArea.innerHTML);
+}
+
+
+function clearMa420Inputs() {
+
+    document.getElementById("ma420Current").value = "";
+
+    document.getElementById("ma420Fs").value = "";
+
+    document.getElementById("ma420Result").textContent = "";
+
+    document.getElementById("ma420Gauge").style.display = "none";
 }
 
 
